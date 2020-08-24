@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
@@ -35,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
 
     //Jumping and gravity obtained from: https://youtu.be/_QajrabyTJc
     private void movement() {
+        Wallrun();
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if(isGrounded && velocity.y < 0) {
@@ -46,11 +48,14 @@ public class PlayerMovement : MonoBehaviour
         movement = transform.TransformDirection(movement);
         charController.Move(movement);
 
+        //Jump Function using equation for gravity potential energy
         if(Input.GetButtonDown("Jump")) {
             velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
         }
 
+        //General gravity always applied to player
         velocity.y += gravity * Time.deltaTime;
+
         if (onSlope()) {
             charController.Move(Vector3.down * slopeForce * Time.deltaTime);
         }
@@ -58,8 +63,6 @@ public class PlayerMovement : MonoBehaviour
         charController.Move(velocity * Time.deltaTime);
 
         
-
-
     }
 
     //checks if the player is on a slope
@@ -76,9 +79,28 @@ public class PlayerMovement : MonoBehaviour
         return false;
     }
 
-    private void Jump() {
-        print("JUMP");
+    private void Wallrun() {
+        RaycastHit hitLeft, hitRight;
+        Vector3 left = transform.InverseTransformPoint(Vector3.left);
+        Vector3 right = transform.InverseTransformPoint(Vector3.right);
+
+        float raycastLength = 10.0f;
+
+        Physics.Raycast(transform.position, left, out hitLeft, raycastLength);
+
+        UnityEngine.Debug.DrawRay(transform.position, left, Color.red);
+
+        Physics.Raycast(transform.position, right, out hitRight, raycastLength);
+        UnityEngine.Debug.DrawRay(transform.position, right, Color.red);
+
+        if (hitLeft.collider != null) {
+            UnityEngine.Debug.Log("Wall to the Left");
+        }
+        if (hitRight.collider != null) {
+            UnityEngine.Debug.Log("Wall to the Right");
+        }
+
     }
 
-
 }
+
