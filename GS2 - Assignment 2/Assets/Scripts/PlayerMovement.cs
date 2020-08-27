@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
 
     //Jumping and gravity obtained from: https://youtu.be/_QajrabyTJc
     private void movement() {
+
         Wallrun();
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
@@ -80,25 +81,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Wallrun() {
-        RaycastHit hitLeft, hitRight;
-        Vector3 left = transform.InverseTransformPoint(Vector3.left);
-        Vector3 right = transform.InverseTransformPoint(Vector3.right);
-
-        float raycastLength = 10.0f;
-
-        Physics.Raycast(transform.position, left, out hitLeft, raycastLength);
-
-        UnityEngine.Debug.DrawRay(transform.position, left, Color.red);
-
-        Physics.Raycast(transform.position, right, out hitRight, raycastLength);
-        UnityEngine.Debug.DrawRay(transform.position, right, Color.red);
-
-        if (hitLeft.collider != null) {
-            UnityEngine.Debug.Log("Wall to the Left");
-        }
-        if (hitRight.collider != null) {
-            UnityEngine.Debug.Log("Wall to the Right");
-        }
+        
 
     }
 
