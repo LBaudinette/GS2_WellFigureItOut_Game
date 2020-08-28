@@ -14,7 +14,8 @@ public class PlayerMovement : MonoBehaviour
     public Transform groundCheck;
     private bool isGrounded;
     private CharacterController charController;
-    private bool isWallRunning, isJumping;
+    private PlayerLook playerLook;
+    private bool isWallRunning, isJumping, isCrouching;
     private Animator animator;
     private float gravity = -9.81f; //default value of gravity in Unity
     Vector3 velocity; // Used for gravity
@@ -25,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         charController = GetComponent<CharacterController>();
+        playerLook = GetComponent<PlayerLook>();
     }
 
     // Update is called once per frame
@@ -52,6 +54,16 @@ public class PlayerMovement : MonoBehaviour
         //Jump Function using equation for gravity potential energy
         if(Input.GetButtonDown("Jump")) {
             velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
+        }
+
+        if (Input.GetButtonDown("Crouch"))
+        {
+            enterCrouchSlide();
+        }
+
+        if (Input.GetButtonUp("Crouch"))
+        {
+            exitCrouchSlide();
         }
 
         //General gravity always applied to player
@@ -85,5 +97,20 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    private void enterCrouchSlide()
+    {
+        isCrouching = true;
+        charController.height = 1.5f;
+        Vector3 crouchPos = new Vector3(playerLook.camera.position.x, playerLook.camera.position.y - 0.25f, playerLook.camera.position.z);
+        playerLook.camera.position = Vector3.Lerp(playerLook.camera.position, crouchPos, 0f);
+    }
+
+    private void exitCrouchSlide()
+    {
+        isCrouching = false;
+        charController.height = 2.0f;
+        Vector3 crouchPos = new Vector3(playerLook.camera.position.x, playerLook.camera.position.y + 0.25f, playerLook.camera.position.z);
+        playerLook.camera.position = Vector3.Lerp(playerLook.camera.position, crouchPos, 0f);
+    }
 }
 
