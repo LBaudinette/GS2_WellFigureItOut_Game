@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isWallRunning, isJumping;
     private Animator animator;
     private float gravity = -9.81f; //default value of gravity in Unity
-    Vector3 velocity; // Used for gravity
+    public Vector3 velocity; // Used for gravity
 
 
 
@@ -40,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
         Wallrun();
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if(isGrounded && velocity.y < 0) {
+        if (isGrounded && velocity.y < 0) {
             velocity.y = -2f;
         }
         Vector3 movement = new Vector3(Input.GetAxisRaw("Horizontal") * speed, 0.0f, Input.GetAxisRaw("Vertical") * speed);
