@@ -15,9 +15,15 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded;
     private CharacterController charController;
     private PlayerLook playerLook;
-    private bool isWallRunning, isJumping, isCrouching;
+    private bool isWallRunning, isJumping, isCrouching, isSprinting;
     private Animator animator;
     private float gravity = -9.81f; //default value of gravity in Unity
+    private float walkSpeed = 3f;
+    private float sprintSpeed = 7f;
+    private float crouchTime = 2f;
+    private float crouchHeight = 1.5f;
+    private float standingHeight = 2.0f;
+    private Coroutine crouchHeightChange = null;
     Vector3 velocity; // Used for gravity
 
 
@@ -45,25 +51,31 @@ public class PlayerMovement : MonoBehaviour
         if(isGrounded && velocity.y < 0) {
             velocity.y = -2f;
         }
-        Vector3 movement = new Vector3(Input.GetAxisRaw("Horizontal") * speed, 0.0f, Input.GetAxisRaw("Vertical") * speed);
+        
+        if (Input.GetButtonDown("Sprint"))
+        {
+            enterSprint();
+        }
+        if (Input.GetButtonUp("Sprint")){
+            exitSprint();
+        }
 
-        movement *= Time.deltaTime;
-        movement = transform.TransformDirection(movement);
-        charController.Move(movement);
+        move();
 
         //Jump Function using equation for gravity potential energy
         if(Input.GetButtonDown("Jump")) {
             velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
         }
 
-        if (Input.GetButtonDown("Crouch"))
+        if (Input.GetButtonDown("Crouch") && isGrounded)
         {
-            enterCrouchSlide();
-        }
-
-        if (Input.GetButtonUp("Crouch"))
+            this.isCrouching = true;
+            changeCrouchHeight();
+        } 
+        if (Input.GetButtonUp("Crouch") && isGrounded)
         {
-            exitCrouchSlide();
+            this.isCrouching = false;
+            changeCrouchHeight();
         }
 
         //General gravity always applied to player
@@ -91,26 +103,56 @@ public class PlayerMovement : MonoBehaviour
         }
         return false;
     }
+    private void move()
+    {
+        Vector3 movement = new Vector3(Input.GetAxisRaw("Horizontal") * speed, 0.0f, Input.GetAxisRaw("Vertical") * speed);
+        movement *= Time.deltaTime;
+        movement = transform.TransformDirection(movement);
+        charController.Move(movement);
+    }
 
     private void Wallrun() {
         
 
     }
 
-    private void enterCrouchSlide()
+    private void enterSprint()
     {
-        isCrouching = true;
-        charController.height = 1.5f;
-        Vector3 crouchPos = new Vector3(playerLook.camera.position.x, playerLook.camera.position.y - 0.25f, playerLook.camera.position.z);
-        playerLook.camera.position = Vector3.Lerp(playerLook.camera.position, crouchPos, 0f);
+        isSprinting = true;
+        speed = sprintSpeed;
+        playerLook.sprint(isSprinting);
     }
 
-    private void exitCrouchSlide()
+    private void exitSprint()
     {
-        isCrouching = false;
-        charController.height = 2.0f;
-        Vector3 crouchPos = new Vector3(playerLook.camera.position.x, playerLook.camera.position.y + 0.25f, playerLook.camera.position.z);
-        playerLook.camera.position = Vector3.Lerp(playerLook.camera.position, crouchPos, 0f);
+        isSprinting = false;
+        speed = walkSpeed;
+        playerLook.sprint(isSprinting);
     }
+
+    private void changeCrouchHeight()
+    {
+        if (crouchHeightChange != null)
+        {
+            StopCoroutine(crouchHeightChange);
+        }
+        crouchHeightChange = StartCoroutine(crouchLerp());
+    }
+
+    private IEnumerator crouchLerp()
+    {
+        float elapsedTime = 0;
+        // set change based on whether player is crouching
+        float endY = this.isCrouching ? crouchHeight : standingHeight;
+
+        while (elapsedTime < crouchTime)
+        {
+            charController.height = Mathf.Lerp(charController.height, endY, elapsedTime / crouchTime);
+            UnityEngine.Debug.Log(charController.height);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+    }
+
 }
 
