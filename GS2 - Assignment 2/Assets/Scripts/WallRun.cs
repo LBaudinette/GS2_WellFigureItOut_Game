@@ -6,14 +6,17 @@ public class WallRun : MonoBehaviour
 {
 
     private CharacterController charController;
-    private bool isWallRunning;
+    private bool isWallRunning = false;
 
     public float speed, slopeForce, jumpForce, groundDistance;
     public LayerMask groundMask;
-    public Transform groundCheck;
+    public Transform groundCheck, camera;
     private bool isGrounded;
-    private bool isJumping;
-    private Animator animator;
+    private float timer = 0.0f;
+    private bool canWallrun = true;
+    private bool isJumping = false;
+    private int? currentWall = 0, lastWall = 0;
+    private Vector3? currentWallNormal = null, lastWallNormal = null;
     private float gravity = -9.81f; //default value of gravity in Unity
     public Vector3 velocity; // Used for gravity
 
@@ -27,11 +30,24 @@ public class WallRun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //checkWall();
-        //if (isWallRunning)
-        //    wallRun();
-        //else
-            movement();
+
+        checkWall();
+
+        if(lastWall != null) {
+            if (timer >= 1.0) {
+                timer = 0.0f;
+                lastWall = null;
+            }
+            timer += Time.deltaTime;
+        }
+            
+        
+    
+    //if (isWallRunning)
+    //    wallRun(currentWall);
+    //else
+    movement();
+        //print(timer);
     }
 
 
@@ -39,8 +55,6 @@ public class WallRun : MonoBehaviour
         RaycastHit hitLeft, hitRight;
         Vector3 left = transform.TransformDirection(Vector3.left);
         Vector3 right = transform.TransformDirection(Vector3.right);
-        //Debug.Log("Left " + left + "  Right: " + right);
-        //Debug.Log(transform.rotation.y);
         float raycastLength = 1.0f;
 
         Physics.Raycast(transform.position, left, out hitLeft, raycastLength);
@@ -52,23 +66,31 @@ public class WallRun : MonoBehaviour
 
         //Check is there are walls on both sides of the player 
         if(hitLeft.collider != null && hitRight.collider != null) {
-            if (checkWall(hitLeft) && checkWall(hitRight))
-                wallRun(getLongestHit(hitLeft, hitRight));
+            if (checkWall(hitLeft) && checkWall(hitRight)) {
+                enterWallRun(getLongestHit(hitLeft, hitRight));
+                return;
+            }
         }
-        else if(hitLeft.collider != null && checkWall(hitLeft)) {
-            wallRun(hitLeft);
+        
+        if(hitLeft.collider != null && 
+            checkWall(hitLeft) && 
+            hitLeft.collider.gameObject.GetInstanceID() != lastWall) {
+            camera.transform.Rotate(camera.transform.rotation.x, camera.transform.rotation.y, -15.0f);
+            enterWallRun(hitLeft);
         }
-        else if (hitRight.collider != null && checkWall(hitRight)) {
-            wallRun(hitRight);
+        else if (hitRight.collider != null && 
+            checkWall(hitRight) && 
+            hitRight.collider.gameObject.GetInstanceID() != lastWall) {
+            camera.transform.Rotate(camera.transform.rotation.x, camera.transform.rotation.y, 15.0f);
+
+            enterWallRun(hitRight);
+
         }
-        else { //if there are no walls to either side of the player
-            isWallRunning = false;
+        else { //if there are no valid walls to either side of the player
+            if(isWallRunning)
+                exitWallRun();
             return;
         }
-
-        
-
-
     }
 
     private void movement() {
@@ -76,7 +98,8 @@ public class WallRun : MonoBehaviour
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if (isGrounded && velocity.y < 0) {
-            velocity.y = -2f;
+            isJumping = false;
+            velocity.y = 0.0f;
         }
         Vector3 movement = new Vector3(Input.GetAxisRaw("Horizontal") * speed, 0.0f, Input.GetAxisRaw("Vertical") * speed);
 
@@ -84,13 +107,24 @@ public class WallRun : MonoBehaviour
         movement = transform.TransformDirection(movement);
         charController.Move(movement);
 
+        
+
+        //General gravity always applied to player when not wall running
+        if (!isWallRunning) {
+            velocity.y += gravity * Time.deltaTime;
+        }
+        else{
+            velocity.y = 0.0f;
+        }
         //Jump Function using equation for gravity potential energy
         if (Input.GetButtonDown("Jump")) {
+            isJumping = true;
+            //If player jumps while wallrunning, stop any wallrunning
+            if (isWallRunning) {
+                exitWallRun();
+            }
             velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
         }
-
-        //General gravity always applied to player
-        velocity.y += gravity * Time.deltaTime;
 
         if (onSlope()) {
             charController.Move(Vector3.down * slopeForce * Time.deltaTime);
@@ -100,6 +134,13 @@ public class WallRun : MonoBehaviour
 
 
     }
+    //Starts a timer before the player can wall run again
+    //void startWallRunTimer() {
+    //    canWallrun = false;
+    //    isWallRunning = false;
+        
+        
+    //}
 
     private bool onSlope() {
         RaycastHit hit;
@@ -114,19 +155,40 @@ public class WallRun : MonoBehaviour
         return false;
     }
 
-    void wallRun(RaycastHit wall) {
+    void enterWallRun(RaycastHit wall) {
+        print("CURRENT: " + currentWall + " LAST NORMAL: " + lastWall);
+        currentWall = wall.collider.gameObject.GetInstanceID();
         isWallRunning = true;
-        Vector3 wallVector = Vector3.Cross(wall.normal, Vector3.up);
 
-        //Move forward along
-        if(Input.GetKey(KeyCode.W))
+    }
+    void exitWallRun() {
+        isWallRunning = false;
+        lastWall = currentWall;
+        currentWall = null;
         
+        print(" NEW CURRENT: " + currentWall + " NEW LAST NORMAL: " + lastWall);
+
+    }
+
+    //Move along the surface that the player is current touching
+    void wallRun(RaycastHit wall) {
+        Vector3 wallVector = Vector3.Cross(wall.normal, Vector3.up);
+        wallVector *= speed;
+        wallVector *= Time.deltaTime;
+
+        //wallVector = transform.TransformDirection(wallVector);
+        //Move forward on the Vector along the wall
+        if (Input.GetKey(KeyCode.W)) {
+            charController.Move(wallVector);
+        }
+
         print(wallVector);
     }
+
+
     //Checks if the object is a wall
     bool checkWall(RaycastHit hit) {
         if (hit.collider.gameObject.tag == "Wall") {
-            print("WALL");
             return true;
         }
 
