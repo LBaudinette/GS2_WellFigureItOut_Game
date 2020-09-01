@@ -277,7 +277,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 90
   orthographic: 0
@@ -1065,7 +1065,7 @@ Transform:
   m_GameObject: {fileID: 1746813090}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.15, z: 0}
-  m_LocalScale: {x: 38.995438, y: 0.088473, z: 27.879719}
+  m_LocalScale: {x: 38.995438, y: 0.088473, z: 30.781998}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -1229,9 +1229,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c657bb66905c44448827caa59f37acf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 7
   slopeForce: 2
-  jumpForce: 2
+  jumpForce: 3
   groundDistance: 0.5
   groundMask:
     serializedVersion: 2
@@ -1293,15 +1293,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1876827785}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.87, y: 0.683, z: 2.59}
+  m_LocalRotation: {x: -0, y: -0.8368313, z: -0, w: 0.54746103}
+  m_LocalPosition: {x: -3.867696, y: 0.683, z: 2.593519}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 851647423}
   - {fileID: 1728997464}
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -113.614006, z: 0}
 --- !u!114 &1876827792
 MonoBehaviour:
   m_ObjectHideFlags: 0

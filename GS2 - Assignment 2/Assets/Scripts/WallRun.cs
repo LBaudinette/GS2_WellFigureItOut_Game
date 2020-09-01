@@ -75,7 +75,13 @@ public class WallRun : MonoBehaviour
         if(hitLeft.collider != null && 
             checkWall(hitLeft) && 
             hitLeft.collider.gameObject.GetInstanceID() != lastWall) {
-            camera.transform.Rotate(camera.transform.rotation.x, camera.transform.rotation.y, -15.0f);
+
+            if (!isWallRunning) {
+                print("YES");
+                StartCoroutine(rotateCameraLeft());
+
+            }
+
             enterWallRun(hitLeft);
         }
         else if (hitRight.collider != null && 
@@ -93,6 +99,29 @@ public class WallRun : MonoBehaviour
         }
     }
 
+    IEnumerator rotateCameraLeft() {
+        print("ROTATION: " + camera.transform.eulerAngles.z);
+        Vector3 currentRotation = camera.transform.eulerAngles;
+        Vector3 targetRotation = new Vector3(camera.transform.eulerAngles.x, camera.transform.eulerAngles.y, -20.0f);
+        Vector3 currentRotate;
+        print("CURRENT: " + currentRotation + " TARGET: " + targetRotation);
+        float duration = 0.5f;
+        float time = 0.0f;
+        float value = 0.0f;
+
+        while (time < duration) {
+
+            currentRotate = Vector3.Lerp(currentRotation, targetRotation,time / duration);
+            camera.transform.eulerAngles = currentRotate;
+
+            time += Time.deltaTime;
+
+            yield return null;
+        }
+
+
+        camera.transform.eulerAngles = targetRotation;
+    }
     private void movement() {
 
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -119,11 +148,14 @@ public class WallRun : MonoBehaviour
         //Jump Function using equation for gravity potential energy
         if (Input.GetButtonDown("Jump")) {
             isJumping = true;
+            //StartCoroutine(rotateCameraLeft());
+
             //If player jumps while wallrunning, stop any wallrunning
             if (isWallRunning) {
                 exitWallRun();
             }
             velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
+            //sqrt -2*f*g
         }
 
         if (onSlope()) {
@@ -134,13 +166,6 @@ public class WallRun : MonoBehaviour
 
 
     }
-    //Starts a timer before the player can wall run again
-    //void startWallRunTimer() {
-    //    canWallrun = false;
-    //    isWallRunning = false;
-        
-        
-    //}
 
     private bool onSlope() {
         RaycastHit hit;
@@ -156,7 +181,7 @@ public class WallRun : MonoBehaviour
     }
 
     void enterWallRun(RaycastHit wall) {
-        print("CURRENT: " + currentWall + " LAST NORMAL: " + lastWall);
+        //print("CURRENT: " + currentWall + " LAST NORMAL: " + lastWall);
         currentWall = wall.collider.gameObject.GetInstanceID();
         isWallRunning = true;
 
@@ -166,7 +191,7 @@ public class WallRun : MonoBehaviour
         lastWall = currentWall;
         currentWall = null;
         
-        print(" NEW CURRENT: " + currentWall + " NEW LAST NORMAL: " + lastWall);
+        //print(" NEW CURRENT: " + currentWall + " NEW LAST NORMAL: " + lastWall);
 
     }
 
