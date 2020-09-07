@@ -28,4 +28,5 @@ public class PlayerLook : MonoBehaviour
         transform.eulerAngles = new Vector3(0, rotationY, 0);
         camera.transform.eulerAngles = new Vector3(rotationX, rotationY, camera.transform.eulerAngles.z);
     }
+
 }

@@ -18,7 +18,8 @@ public class WallRun : MonoBehaviour
     private int? currentWall = 0, lastWall = 0;
     private Vector3? currentWallNormal = null, lastWallNormal = null;
     private float gravity = -9.81f; //default value of gravity in Unity
-    public Vector3 velocity; // Used for gravity
+    private Vector3 velocity; // Used for gravity
+    private Coroutine currentRoutine;
 
     // Start is called before the first frame update
     void Start()
@@ -40,14 +41,14 @@ public class WallRun : MonoBehaviour
             }
             timer += Time.deltaTime;
         }
-            
-        
-    
-    //if (isWallRunning)
-    //    wallRun(currentWall);
-    //else
-    movement();
-        //print(timer);
+        movement();
+
+    }
+
+    private void LateUpdate() {
+        if (isWallRunning) {
+
+        }
     }
 
 
@@ -75,44 +76,98 @@ public class WallRun : MonoBehaviour
         if(hitLeft.collider != null && 
             checkWall(hitLeft) && 
             hitLeft.collider.gameObject.GetInstanceID() != lastWall) {
-
             if (!isWallRunning) {
-                print("YES");
-                StartCoroutine(rotateCameraLeft());
 
+                if (currentRoutine != null)
+                    StopCoroutine(currentRoutine);
+                currentRoutine = StartCoroutine(rotateCameraLeft());
             }
-
             enterWallRun(hitLeft);
         }
         else if (hitRight.collider != null && 
             checkWall(hitRight) && 
             hitRight.collider.gameObject.GetInstanceID() != lastWall) {
-            camera.transform.Rotate(camera.transform.rotation.x, camera.transform.rotation.y, 15.0f);
 
+            if (!isWallRunning) {
+                if (currentRoutine != null)
+                    StopCoroutine(currentRoutine);
+                currentRoutine = StartCoroutine(rotateCameraRight());
+            }
             enterWallRun(hitRight);
 
         }
         else { //if there are no valid walls to either side of the player
-            if(isWallRunning)
+            if (isWallRunning) {
                 exitWallRun();
+            }
+
+                
             return;
         }
     }
 
     IEnumerator rotateCameraLeft() {
         print("ROTATION: " + camera.transform.eulerAngles.z);
+        
         Vector3 currentRotation = camera.transform.eulerAngles;
         Vector3 targetRotation = new Vector3(camera.transform.eulerAngles.x, camera.transform.eulerAngles.y, -20.0f);
         Vector3 currentRotate;
         print("CURRENT: " + currentRotation + " TARGET: " + targetRotation);
         float duration = 0.5f;
         float time = 0.0f;
-        float value = 0.0f;
 
         while (time < duration) {
 
             currentRotate = Vector3.Lerp(currentRotation, targetRotation,time / duration);
             camera.transform.eulerAngles = currentRotate;
+            //camera.transform.rotation = Quaternion.Euler(currentRotate);
+
+            time += Time.deltaTime;
+
+            yield return null;
+        }
+
+        camera.transform.eulerAngles = targetRotation;
+    }
+    IEnumerator rotateCameraRight() {
+        print("ROTATION: " + camera.transform.eulerAngles.z);
+
+        Vector3 currentRotation = camera.transform.eulerAngles;
+        Vector3 targetRotation = new Vector3(camera.transform.eulerAngles.x, camera.transform.eulerAngles.y, 20.0f);
+        Vector3 currentRotate;
+        print("CURRENT: " + currentRotation + " TARGET: " + targetRotation);
+        float duration = 0.5f;
+        float time = 0.0f;
+
+        while (time < duration) {
+
+            currentRotate = Vector3.Lerp(currentRotation, targetRotation, time / duration);
+            camera.transform.eulerAngles = currentRotate;
+            //camera.transform.rotation = Quaternion.Euler(currentRotate);
+
+            time += Time.deltaTime;
+
+            yield return null;
+        }
+
+        camera.transform.eulerAngles = targetRotation;
+    }
+
+    IEnumerator resetCamera() {
+
+        print("ROTATION: " + camera.transform.eulerAngles.z);
+
+        Vector3 currentRotation = camera.transform.eulerAngles;
+        Vector3 targetRotation = new Vector3(camera.transform.eulerAngles.x, camera.transform.eulerAngles.y, 360.0f);
+        Vector3 currentRotate;
+        print("CURRENT: " + currentRotation + " TARGET: " + targetRotation);
+        float duration = 0.5f;
+        float time = 0.0f;
+
+        while (time < duration) {
+
+            currentRotate = Vector3.Lerp(currentRotation, targetRotation, time / duration);
+            camera.transform.rotation = Quaternion.Euler(currentRotate);
 
             time += Time.deltaTime;
 
@@ -121,6 +176,8 @@ public class WallRun : MonoBehaviour
 
 
         camera.transform.eulerAngles = targetRotation;
+
+
     }
     private void movement() {
 
@@ -190,7 +247,12 @@ public class WallRun : MonoBehaviour
         isWallRunning = false;
         lastWall = currentWall;
         currentWall = null;
-        
+        if (currentRoutine != null) {
+            StopCoroutine(currentRoutine);
+            currentRoutine = StartCoroutine(resetCamera());
+        }
+           
+
         //print(" NEW CURRENT: " + currentWall + " NEW LAST NORMAL: " + lastWall);
 
     }
