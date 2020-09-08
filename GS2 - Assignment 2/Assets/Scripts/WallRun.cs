@@ -15,6 +15,7 @@ public class WallRun : MonoBehaviour
     private float timer = 0.0f;
     private bool canWallrun = true;
     private bool isJumping = false;
+    private bool canDoubleJump = true;
     private int? currentWall = 0, lastWall = 0;
     private Vector3? currentWallNormal = null, lastWallNormal = null;
     private float gravity = -9.81f; //default value of gravity in Unity
@@ -35,7 +36,7 @@ public class WallRun : MonoBehaviour
         checkWall();
 
         if(lastWall != null) {
-            if (timer >= 1.0) {
+            if (timer >= 5.0) {
                 timer = 0.0f;
                 lastWall = null;
             }
@@ -44,13 +45,6 @@ public class WallRun : MonoBehaviour
         movement();
 
     }
-
-    private void LateUpdate() {
-        if (isWallRunning) {
-
-        }
-    }
-
 
     void checkWall() {
         RaycastHit hitLeft, hitRight;
@@ -66,12 +60,12 @@ public class WallRun : MonoBehaviour
 
 
         //Check is there are walls on both sides of the player 
-        if(hitLeft.collider != null && hitRight.collider != null) {
-            if (checkWall(hitLeft) && checkWall(hitRight)) {
-                enterWallRun(getLongestHit(hitLeft, hitRight));
-                return;
-            }
-        }
+        //if(hitLeft.collider != null && hitRight.collider != null) {
+        //    if (checkWall(hitLeft) && checkWall(hitRight)) {
+        //        enterWallRun(getLongestHit(hitLeft, hitRight));
+        //        return;
+        //    }
+        //}
         
         if(hitLeft.collider != null && 
             checkWall(hitLeft) && 
@@ -154,11 +148,10 @@ public class WallRun : MonoBehaviour
     }
 
     IEnumerator resetCamera() {
-
-        print("ROTATION: " + camera.transform.eulerAngles.z);
+        float targetZ = (camera.transform.eulerAngles.z > 180.0f) ? 360.0f : 0.0f;
 
         Vector3 currentRotation = camera.transform.eulerAngles;
-        Vector3 targetRotation = new Vector3(camera.transform.eulerAngles.x, camera.transform.eulerAngles.y, 360.0f);
+        Vector3 targetRotation = new Vector3(camera.transform.eulerAngles.x, camera.transform.eulerAngles.y, targetZ);
         Vector3 currentRotate;
         print("CURRENT: " + currentRotation + " TARGET: " + targetRotation);
         float duration = 0.5f;
@@ -230,7 +223,6 @@ public class WallRun : MonoBehaviour
         //if the normal of the surface the player is standing on is not pointing up, then it is a slope
         if (Physics.Raycast(transform.position, Vector3.down, out hit, 10)) {
             if (hit.normal != Vector3.up) {
-
                 return true;
             }
         }
@@ -238,7 +230,6 @@ public class WallRun : MonoBehaviour
     }
 
     void enterWallRun(RaycastHit wall) {
-        //print("CURRENT: " + currentWall + " LAST NORMAL: " + lastWall);
         currentWall = wall.collider.gameObject.GetInstanceID();
         isWallRunning = true;
 
@@ -251,10 +242,6 @@ public class WallRun : MonoBehaviour
             StopCoroutine(currentRoutine);
             currentRoutine = StartCoroutine(resetCamera());
         }
-           
-
-        //print(" NEW CURRENT: " + currentWall + " NEW LAST NORMAL: " + lastWall);
-
     }
 
     //Move along the surface that the player is current touching

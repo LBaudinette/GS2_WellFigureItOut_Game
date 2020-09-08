@@ -17,7 +17,7 @@ public class PlayerLook : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         rotationX -= Input.GetAxis("Mouse Y") * rotationSpeed;
         rotationX = Mathf.Clamp(rotationX, minVertical, maxVertical);
