@@ -24,7 +24,6 @@ public class PlayerLook : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        UnityEngine.Debug.Log("updating camera rotation");
         rotationX -= Input.GetAxis("Mouse Y") * rotationSpeed;
         rotationX = Mathf.Clamp(rotationX, minVertical, maxVertical);
 

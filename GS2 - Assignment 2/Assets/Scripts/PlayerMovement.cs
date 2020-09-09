@@ -42,12 +42,12 @@ public class PlayerMovement : MonoBehaviour
     {
         charController = GetComponent<CharacterController>();
         playerLook = GetComponent<PlayerLook>();
+        speed = walkSpeed;
     }
 
     // Update is called once per frame
     void Update()
     {
-        UnityEngine.Debug.Log("checkWall()");
         checkWall();
 
         if (lastWall != null) {
@@ -57,7 +57,6 @@ public class PlayerMovement : MonoBehaviour
             }
             timer += Time.deltaTime;
         }
-        UnityEngine.Debug.Log("movement()");
         movement();
 
     }
@@ -68,7 +67,7 @@ public class PlayerMovement : MonoBehaviour
         Wallrun();
         this.isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if (this.isGrounded)
+        if (isGrounded)
         {
             UnityEngine.Debug.Log("grounded");
             // check if on slope
@@ -146,6 +145,7 @@ public class PlayerMovement : MonoBehaviour
         //Jump Function using equation for gravity potential energy
         if (Input.GetButtonDown("Jump"))
         {
+            UnityEngine.Debug.Log("jumping");
             isJumping = true;
             //StartCoroutine(rotateCameraLeft());
 
