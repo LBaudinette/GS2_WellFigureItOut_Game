@@ -11,19 +11,22 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed, slopeForce, jumpForce, groundDistance;
     public LayerMask groundMask;
-    public Transform groundCheck;
+    public Transform groundCheck, camera;
     private bool isGrounded;
     private CharacterController charController;
     private PlayerLook playerLook;
     private bool isWallRunning, isJumping, isCrouching, isSprinting;
     private Animator animator;
+    private int? currentWall = 0, lastWall = 0;
     private float gravity = -9.81f; //default value of gravity in Unity
     private float walkSpeed = 3f;
     private float sprintSpeed = 7f;
     private float crouchTime = 2f;
     private float crouchHeight = 1.5f;
     private float standingHeight = 2.0f;
+    private float timer = 0.0f;
     private Coroutine crouchHeightChange = null;
+    private Coroutine currentRoutine;
     Vector3 velocity; // Used for gravity
 
 
@@ -38,6 +41,15 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        checkWall();
+
+        if (lastWall != null) {
+            if (timer >= 5.0) {
+                timer = 0.0f;
+                lastWall = null;
+            }
+            timer += Time.deltaTime;
+        }
         movement();
 
     }
@@ -45,11 +57,12 @@ public class PlayerMovement : MonoBehaviour
     //Jumping and gravity obtained from: https://youtu.be/_QajrabyTJc
     private void movement() {
 
-        Wallrun();
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if(isGrounded && velocity.y < 0) {
-            velocity.y = -2f;
+            isJumping = false;
+            velocity.y = -2.0f;
+            print("grounded");
         }
         
         if (Input.GetButtonDown("Sprint"))
@@ -62,8 +75,23 @@ public class PlayerMovement : MonoBehaviour
 
         move();
 
+        //General gravity always applied to player when not wall running
+        if (!isWallRunning) {
+            velocity.y += gravity * Time.deltaTime;
+        }
+        else {
+            velocity.y = 0.0f;
+        }
+
         //Jump Function using equation for gravity potential energy
-        if(Input.GetButtonDown("Jump")) {
+        if (Input.GetButtonDown("Jump")) {
+            isJumping = true;
+            //StartCoroutine(rotateCameraLeft());
+
+            //If player jumps while wallrunning, stop any wallrunning
+            if (isWallRunning) {
+                exitWallRun();
+            }
             velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
         }
 
@@ -78,10 +106,9 @@ public class PlayerMovement : MonoBehaviour
             changeCrouchHeight();
         }
 
-        //General gravity always applied to player
-        velocity.y += gravity * Time.deltaTime;
 
         if (onSlope()) {
+            print("slope");
             charController.Move(Vector3.down * slopeForce * Time.deltaTime);
         }
 
@@ -111,8 +138,132 @@ public class PlayerMovement : MonoBehaviour
         charController.Move(movement);
     }
 
-    private void Wallrun() {
-        
+    void checkWall() {
+        RaycastHit hitLeft, hitRight;
+        Vector3 left = transform.TransformDirection(Vector3.left);
+        Vector3 right = transform.TransformDirection(Vector3.right);
+        float raycastLength = 1.0f;
+
+        Physics.Raycast(transform.position, left, out hitLeft, raycastLength);
+        UnityEngine.Debug.DrawRay(transform.position, left, Color.blue);
+
+        Physics.Raycast(transform.position, right, out hitRight, raycastLength);
+        UnityEngine.Debug.DrawRay(transform.position, right, Color.red);
+
+
+        //Check is there are walls on both sides of the player 
+        //if(hitLeft.collider != null && hitRight.collider != null) {
+        //    if (checkWall(hitLeft) && checkWall(hitRight)) {
+        //        enterWallRun(getLongestHit(hitLeft, hitRight));
+        //        return;
+        //    }
+        //}
+
+        if (hitLeft.collider != null &&
+            checkHit(hitLeft) &&
+            hitLeft.collider.gameObject.GetInstanceID() != lastWall) {
+            if (!isWallRunning) {
+
+                if (currentRoutine != null)
+                    StopCoroutine(currentRoutine);
+                currentRoutine = StartCoroutine(rotateCamera(-20.0f));
+            }
+            enterWallRun(hitLeft);
+        }
+        else if (hitRight.collider != null &&
+            checkHit(hitRight) &&
+            hitRight.collider.gameObject.GetInstanceID() != lastWall) {
+
+            if (!isWallRunning) {
+                if (currentRoutine != null)
+                    StopCoroutine(currentRoutine);
+                currentRoutine = StartCoroutine(rotateCamera(20.0f));
+            }
+            enterWallRun(hitRight);
+
+        }
+        else { //if there are no valid walls to either side of the player
+            if (isWallRunning) {
+                exitWallRun();
+            }
+
+
+            return;
+        }
+    }
+    bool checkHit(RaycastHit hit) {
+        if (hit.collider.gameObject.tag == "Wall") {
+            return true;
+        }
+
+        //Method suggested by footnotes
+        //if (Vector3.Dot(hit.normal, Vector3.up) == 0) {
+        //    print("WALL");
+        //    return true;
+        //}
+
+        return false;
+    }
+
+    void enterWallRun(RaycastHit wall) {
+        currentWall = wall.collider.gameObject.GetInstanceID();
+        isWallRunning = true;
+
+    }
+    void exitWallRun() {
+        isWallRunning = false;
+        lastWall = currentWall;
+        currentWall = null;
+        if (currentRoutine != null) {
+            StopCoroutine(currentRoutine);
+            currentRoutine = StartCoroutine(resetCamera());
+        }
+    }
+    IEnumerator rotateCamera(float angle) {
+        print("ROTATION: " + camera.transform.eulerAngles.z);
+
+        Vector3 currentRotation = camera.transform.eulerAngles;
+        Vector3 targetRotation = new Vector3(camera.transform.eulerAngles.x, camera.transform.eulerAngles.y, angle);
+        Vector3 currentRotate;
+        print("CURRENT: " + currentRotation + " TARGET: " + targetRotation);
+        float duration = 0.3f;
+        float time = 0.0f;
+
+        while (time < duration) {
+
+            currentRotate = Vector3.Lerp(currentRotation, targetRotation, time / duration);
+            camera.transform.eulerAngles = currentRotate;
+            //camera.transform.rotation = Quaternion.Euler(currentRotate);
+
+            time += Time.deltaTime;
+
+            yield return null;
+        }
+
+        camera.transform.eulerAngles = targetRotation;
+    }
+    IEnumerator resetCamera() {
+        float targetZ = (camera.transform.eulerAngles.z > 180.0f) ? 360.0f : 0.0f;
+
+        Vector3 currentRotation = camera.transform.eulerAngles;
+        Vector3 targetRotation = new Vector3(camera.transform.eulerAngles.x, camera.transform.eulerAngles.y, targetZ);
+        Vector3 currentRotate;
+        float duration = 0.3f;
+        float time = 0.0f;
+
+        while (time < duration) {
+
+            currentRotate = Vector3.Lerp(currentRotation, targetRotation, time / duration);
+            camera.transform.rotation = Quaternion.Euler(currentRotate);
+
+            time += Time.deltaTime;
+
+            yield return null;
+        }
+
+
+        camera.transform.eulerAngles = targetRotation;
+
 
     }
 
