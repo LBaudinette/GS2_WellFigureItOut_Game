@@ -1362,8 +1362,8 @@ GameObject:
   - component: {fileID: 1876827789}
   - component: {fileID: 1876827787}
   - component: {fileID: 1876827786}
-  - component: {fileID: 1876827792}
   - component: {fileID: 1876827788}
+  - component: {fileID: 1876827792}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1384,7 +1384,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 5
-  camera: {fileID: 227560266}
+  cameraTranform: {fileID: 227560266}
+  camera: {fileID: 227560268}
 --- !u!143 &1876827787
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1415,13 +1416,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c657bb66905c44448827caa59f37acf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 7
-  slopeForce: 2
-  jumpForce: 3
-  groundDistance: 0.5
+  speed: 0
+  slopeForce: 0
+  jumpForce: 0
+  groundDistance: 0
   groundMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
   groundCheck: {fileID: 1728997464}
   camera: {fileID: 227560266}
 --- !u!23 &1876827789
@@ -1494,17 +1495,17 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1876827785}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dd5dfc70adfda0040a08ff586f91c449, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  slopeForce: 2
-  jumpForce: 4
-  groundDistance: 0.5
+  speed: 0
+  slopeForce: 0
+  jumpForce: 0
+  groundDistance: 0
   groundMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
   groundCheck: {fileID: 1728997464}
-  velocity: {x: 0, y: 0, z: 0}
+  camera: {fileID: 227560266}
