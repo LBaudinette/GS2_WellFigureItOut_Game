@@ -23,7 +23,7 @@ public class PlayerLook : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         rotationX -= Input.GetAxis("Mouse Y") * rotationSpeed;
         rotationX = Mathf.Clamp(rotationX, minVertical, maxVertical);
@@ -32,7 +32,7 @@ public class PlayerLook : MonoBehaviour
 
 
         transform.eulerAngles = new Vector3(0, rotationY, 0);
-        camera.transform.eulerAngles = new Vector3(rotationX, rotationY, 0);
+        camera.transform.eulerAngles = new Vector3(rotationX, rotationY, camera.transform.eulerAngles.z);
     }
 
     public void sprint(bool isSprinting)
