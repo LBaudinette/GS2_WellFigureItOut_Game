@@ -62,7 +62,6 @@ public class PlayerMovement : MonoBehaviour
         if(isGrounded && velocity.y < 0) {
             isJumping = false;
             velocity.y = -2.0f;
-            print("grounded");
         }
         
         if (Input.GetButtonDown("Sprint"))
