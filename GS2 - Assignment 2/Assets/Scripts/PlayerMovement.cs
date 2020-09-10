@@ -68,7 +68,16 @@ public class PlayerMovement : MonoBehaviour
         //print(isGrounded);
         if (isGrounded)
         {
+
             lastWall = null;
+
+
+            if (bounce != null)
+            {
+                StopCoroutine(bounce);
+            }
+
+
             //UnityEngine.Debug.Log("grounded");
             // check if on slope
             isOnSlope = onSlope();
