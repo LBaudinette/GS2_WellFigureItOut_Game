@@ -33,6 +33,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 slideForward;
     private Coroutine slideRoutine = null;
 
+    private Coroutine bounce = null;
+
     Vector3 velocity; // Used for gravity
 
 
@@ -68,6 +70,12 @@ public class PlayerMovement : MonoBehaviour
         print(isGrounded);
         if (isGrounded)
         {
+
+            if (bounce != null)
+            {
+                StopCoroutine(bounce);
+            }
+
             //UnityEngine.Debug.Log("grounded");
             // check if on slope
             isOnSlope = onSlope();
@@ -81,9 +89,9 @@ public class PlayerMovement : MonoBehaviour
             }
 
             // sprinting inputs
-            // enter sprint if not crouching and sprint key is pressed
+            // enter sprint if not sliding/crouching/sprinting and sprint key is pressed and player is moving forward
             //print("isSliding " + isSliding + "isSprinting " + isSprinting + "IsCrouching " + isCrouching);
-            if (!isSliding && !isSprinting && !isCrouching && Input.GetButtonDown("Sprint"))
+            if (!isSliding && !isSprinting && !isCrouching && Input.GetButtonDown("Sprint") && Input.GetAxisRaw("Vertical") > 0)
             {
                 print("print");
                 enterSprint();
@@ -429,6 +437,40 @@ public class PlayerMovement : MonoBehaviour
             yield return null;
         }
 
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.tag == "BouncePad")
+        {
+            BouncePad pad = hit.gameObject.GetComponent<BouncePad>();
+            applyForce(pad.forceDir, pad.forceSpeed, pad.forceTime);
+        }
+    }
+
+    private void applyForce(Vector3 dir, float forceSpeed, float forceTime)
+    {
+        if (bounce != null)
+        {
+            StopCoroutine(bounce);
+        }
+        bounce = StartCoroutine(applyForceRoutine(dir, forceSpeed, forceTime));
+    }
+
+    private IEnumerator applyForceRoutine(Vector3 dir, float forceSpeed, float forceTime)
+    {
+        float elapsedTime = 0f;
+        float currTime;
+        float currSpeed = forceSpeed;
+        while (currSpeed > 0.0f)
+        {
+            currTime = elapsedTime / forceTime;
+            // quadratic ease out to simulate projectile motion
+            currSpeed = -(-forceSpeed) * 2f * currTime * (currTime - 2) + forceSpeed;
+            charController.Move(dir * currSpeed);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
     }
 
 }
