@@ -76,6 +76,7 @@ public class PlayerMovement : MonoBehaviour
                 StopCoroutine(bounce);
             }
 
+            lastWall = null;
             //UnityEngine.Debug.Log("grounded");
             // check if on slope
             isOnSlope = onSlope();
@@ -93,7 +94,6 @@ public class PlayerMovement : MonoBehaviour
             //print("isSliding " + isSliding + "isSprinting " + isSprinting + "IsCrouching " + isCrouching);
             if (!isSliding && !isSprinting && !isCrouching && Input.GetButtonDown("Sprint") && Input.GetAxisRaw("Vertical") > 0)
             {
-                print("print");
                 enterSprint();
             }
             // exit sprint if too slow
