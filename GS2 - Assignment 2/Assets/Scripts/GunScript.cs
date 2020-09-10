@@ -25,13 +25,16 @@ public class GunScript : MonoBehaviour {
     void shoot() {
         Vector3 point = new Vector3(Screen.width / 2, Screen.height / 2, 0.0f);
         Ray ray = camera.ScreenPointToRay(point);
-        //Debug.DrawRay(ray.origin, ray.direction * 10, Color.red);
+        Debug.DrawRay(ray.origin, ray.direction * 10, Color.red);
         RaycastHit hit;
         if(Physics.Raycast(ray, out hit)) {
             print(hit.collider.tag);
             switch (hit.collider.tag) {
                 case "Enemy":
                     Destroy(hit.collider.gameObject);
+                    break;
+                case "Switch":
+                    hit.collider.gameObject.GetComponent<SwitchScript>().enable();
                     break;
             }
         }

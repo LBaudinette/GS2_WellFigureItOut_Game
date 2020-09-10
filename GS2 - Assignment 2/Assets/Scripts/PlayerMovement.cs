@@ -67,7 +67,6 @@ public class PlayerMovement : MonoBehaviour
     private void movement() {
         
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        print(isGrounded);
         if (isGrounded)
         {
 
@@ -86,7 +85,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 isJumping = false;
                 velocity.y = -2.0f;
-                //print("grounded");
             }
 
             // sprinting inputs
