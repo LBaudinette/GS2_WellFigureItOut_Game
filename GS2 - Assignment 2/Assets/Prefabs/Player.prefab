@@ -247,7 +247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0
   slopeForce: 3
-  jumpForce: 4
+  jumpForce: 2
   groundDistance: 0.1
   groundMask:
     serializedVersion: 2

@@ -16,13 +16,13 @@ public class PlayerMovement : MonoBehaviour
     private PlayerLook playerLook;
     private Animator animator;
     private int ? currentWall = 0, lastWall = 0;
-    private bool isGrounded, isWallRunning, isJumping, isCrouching, isSliding, isSprinting, isOnSlope;
+    private bool isGrounded, isWallRunning, isJumping, isCrouching, isSliding, isSprinting, isOnSlope, wasGrounded;
     private float gravity = -9.81f; //default value of gravity in Unity
-    private float walkSpeed = 5f;
+    private float walkSpeed = 7f;
     private float sprintSpeed = 10f;
 
     private float crouchSpeed = 3f;
-    private float crouchHeight = 1.5f;
+    private float crouchHeight = 1.25f;
     private float standingHeight = 2.0f;
     private float timer = 0.0f;
     private Coroutine cameraRoutine;
@@ -65,11 +65,11 @@ public class PlayerMovement : MonoBehaviour
 
     //Jumping and gravity obtained from: https://youtu.be/_QajrabyTJc
     private void movement() {
-        
+
+        wasGrounded = isGrounded;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         if (isGrounded)
         {
-            print("grounded");
 
             if (bounce != null)
             {
@@ -137,6 +137,15 @@ public class PlayerMovement : MonoBehaviour
                     exitSlide();
                     exitCrouch();
                 }
+            }
+        } else
+        {
+            if (wasGrounded)
+            {
+                this.isSprinting = false;
+                this.isCrouching = false;
+                charController.height = standingHeight;
+                exitSlide();
             }
         }
 
@@ -399,6 +408,7 @@ public class PlayerMovement : MonoBehaviour
     {
         this.isSprinting = false;
         this.isCrouching = true;
+        charController.height = crouchHeight;
         this.isSliding = true;
         slideRoutine = StartCoroutine(slideLerp());
     }
@@ -413,6 +423,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (isSprinting)
         {
+            charController.height = standingHeight;
             this.speed = sprintSpeed;
         }
         else if (isCrouching)
@@ -421,6 +432,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (!isCrouching)
         {
+            charController.height = standingHeight;
             this.speed = walkSpeed;
         }
     }
@@ -470,6 +482,8 @@ public class PlayerMovement : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+
+        exitSlide();
     }
 
 }
