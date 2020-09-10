@@ -7,6 +7,7 @@ TagManager:
   - Wall
   - BouncePad
   - Switch
+  - Enemy
   layers:
   - Default
   - TransparentFX
