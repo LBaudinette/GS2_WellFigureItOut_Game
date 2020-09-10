@@ -452,7 +452,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (hit.gameObject.tag == "BouncePad")
+        if (hit.gameObject.tag == "Finish")
+        {
+            LevelEndScript levelEnd = hit.gameObject.GetComponent<LevelEndScript>();
+            levelEnd.nextLevel();
+        }
+        else if (hit.gameObject.tag == "BouncePad")
         {
             BouncePad pad = hit.gameObject.GetComponent<BouncePad>();
             applyForce(pad.forceDir, pad.forceSpeed, pad.forceTime);

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelEndScript : MonoBehaviour
 {
@@ -27,6 +28,17 @@ public class LevelEndScript : MonoBehaviour
         {
             enabled = true;
             levelEnd.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+        }
+    }
+
+    public void nextLevel()
+    {
+        if (enabled)
+        {
+            if (SceneManager.GetActiveScene().name.Equals("Level 1")){
+                SceneManager.UnloadSceneAsync("Level 1");
+                SceneManager.LoadScene("Level 2");
+            }
         }
     }
 }
