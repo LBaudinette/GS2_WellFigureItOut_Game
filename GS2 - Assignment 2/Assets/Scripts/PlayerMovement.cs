@@ -64,12 +64,11 @@ public class PlayerMovement : MonoBehaviour
     //Jumping and gravity obtained from: https://youtu.be/_QajrabyTJc
     private void movement() {
         
-        Wallrun();
-        this.isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        print(isGrounded);
         if (isGrounded)
         {
-            UnityEngine.Debug.Log("grounded");
+            //UnityEngine.Debug.Log("grounded");
             // check if on slope
             isOnSlope = onSlope();
 
@@ -78,13 +77,15 @@ public class PlayerMovement : MonoBehaviour
             {
                 isJumping = false;
                 velocity.y = -2.0f;
-                print("grounded");
+                //print("grounded");
             }
 
             // sprinting inputs
             // enter sprint if not crouching and sprint key is pressed
+            //print("isSliding " + isSliding + "isSprinting " + isSprinting + "IsCrouching " + isCrouching);
             if (!isSliding && !isSprinting && !isCrouching && Input.GetButtonDown("Sprint"))
             {
+                print("print");
                 enterSprint();
             }
             // exit sprint if too slow
@@ -145,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
         //Jump Function using equation for gravity potential energy
         if (Input.GetButtonDown("Jump"))
         {
-            UnityEngine.Debug.Log("jumping");
+            //UnityEngine.Debug.Log("jumping");
             isJumping = true;
             //StartCoroutine(rotateCameraLeft());
 
@@ -163,7 +164,7 @@ public class PlayerMovement : MonoBehaviour
             charController.Move(Vector3.down * slopeForce * Time.deltaTime);
         }
 
-        UnityEngine.Debug.Log("Speed = " + this.speed);
+        //UnityEngine.Debug.Log("Speed = " + this.speed);
 
         move();
 
@@ -338,15 +339,12 @@ public class PlayerMovement : MonoBehaviour
         {
             movement = new Vector3(Input.GetAxisRaw("Horizontal") * speed, 0.0f, Input.GetAxisRaw("Vertical") * speed);
         }
-        UnityEngine.Debug.Log("moving");
+        //UnityEngine.Debug.Log("moving");
         movement *= Time.deltaTime;
         movement = transform.TransformDirection(movement);
         charController.Move(movement);
     }
 
-    private void Wallrun() {
-
-    }
 
     private void enterSprint()
     {
