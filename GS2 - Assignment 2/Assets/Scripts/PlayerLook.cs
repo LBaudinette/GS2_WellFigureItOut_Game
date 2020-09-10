@@ -11,7 +11,6 @@ public class PlayerLook : MonoBehaviour
     private float maxVertical = 90.0f;
     private float rotationY = 0;
     private float rotationX = 0;
-    private float crouchShiftY = 7f;
     private float defaultFoV = 80f;
     private float sprintFoV = 100f;
     private float sprintFoVChangeTime = 1f;
@@ -23,7 +22,7 @@ public class PlayerLook : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         rotationX -= Input.GetAxis("Mouse Y") * rotationSpeed;
         rotationX = Mathf.Clamp(rotationX, minVertical, maxVertical);
@@ -32,7 +31,7 @@ public class PlayerLook : MonoBehaviour
 
 
         transform.eulerAngles = new Vector3(0, rotationY, 0);
-        camera.transform.eulerAngles = new Vector3(rotationX, rotationY, 0);
+        camera.transform.eulerAngles = new Vector3(rotationX, rotationY, camera.transform.eulerAngles.z);
     }
 
     public void sprint(bool isSprinting)
@@ -46,12 +45,14 @@ public class PlayerLook : MonoBehaviour
 
     public IEnumerator sprintFoVLerp(bool isSprinting)
     {
+        UnityEngine.Debug.Log("isSprinting = " + isSprinting);
         float elapsedTime = 0;
         // set endpoint of change based on whether player is sprinting
         float endFoV = isSprinting ? sprintFoV : defaultFoV;
 
         while (elapsedTime < sprintFoVChangeTime)
         {
+            UnityEngine.Debug.Log("FoV = " + camera.fieldOfView);
             camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, endFoV, elapsedTime / sprintFoVChangeTime);
             elapsedTime += Time.deltaTime;
             yield return null;
