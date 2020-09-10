@@ -65,9 +65,10 @@ public class PlayerMovement : MonoBehaviour
     private void movement() {
         
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        print(isGrounded);
+        //print(isGrounded);
         if (isGrounded)
         {
+            lastWall = null;
             //UnityEngine.Debug.Log("grounded");
             // check if on slope
             isOnSlope = onSlope();
@@ -85,7 +86,6 @@ public class PlayerMovement : MonoBehaviour
             //print("isSliding " + isSliding + "isSprinting " + isSprinting + "IsCrouching " + isCrouching);
             if (!isSliding && !isSprinting && !isCrouching && Input.GetButtonDown("Sprint"))
             {
-                print("print");
                 enterSprint();
             }
             // exit sprint if too slow
