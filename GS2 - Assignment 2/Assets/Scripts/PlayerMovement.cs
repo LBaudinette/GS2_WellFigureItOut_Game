@@ -69,6 +69,7 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         if (isGrounded)
         {
+            print("grounded");
 
             if (bounce != null)
             {
