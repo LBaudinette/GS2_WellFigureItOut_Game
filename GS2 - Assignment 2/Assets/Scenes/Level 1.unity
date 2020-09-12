@@ -961,6 +961,11 @@ PrefabInstance:
       propertyPath: forceTime
       value: 3.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5781199887377001933, guid: 4a548766e1fff1a4f8a6e5286f91c1d7,
+        type: 3}
+      propertyPath: padEnabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5781199887377001934, guid: 4a548766e1fff1a4f8a6e5286f91c1d7,
         type: 3}
       propertyPath: m_Name
@@ -1048,12 +1053,17 @@ PrefabInstance:
     - target: {fileID: 5781199887377001933, guid: 4a548766e1fff1a4f8a6e5286f91c1d7,
         type: 3}
       propertyPath: forceDir.x
-      value: 1
+      value: -0.75
       objectReference: {fileID: 0}
     - target: {fileID: 5781199887377001933, guid: 4a548766e1fff1a4f8a6e5286f91c1d7,
         type: 3}
       propertyPath: forceDir.y
-      value: 0.75
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5781199887377001933, guid: 4a548766e1fff1a4f8a6e5286f91c1d7,
+        type: 3}
+      propertyPath: padEnabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5781199887377001934, guid: 4a548766e1fff1a4f8a6e5286f91c1d7,
         type: 3}

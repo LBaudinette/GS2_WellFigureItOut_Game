@@ -36,6 +36,14 @@ public class GunScript : MonoBehaviour {
                 case "Switch":
                     hit.collider.gameObject.GetComponent<SwitchScript>().enable();
                     break;
+                case "BouncePad":
+                    BouncePad pad = hit.collider.gameObject.GetComponent<BouncePad>();
+                    if (!pad.padEnabled)
+                    {
+                        pad.padEnabled = true;
+                        hit.collider.gameObject.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+                    }
+                    break;
             }
         }
         // Physics.Raycast()

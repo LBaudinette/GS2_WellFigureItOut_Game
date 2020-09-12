@@ -460,7 +460,12 @@ public class PlayerMovement : MonoBehaviour
         else if (hit.gameObject.tag == "BouncePad")
         {
             BouncePad pad = hit.gameObject.GetComponent<BouncePad>();
-            applyForce(pad.forceDir, pad.forceSpeed, pad.forceTime);
+            // bounce player off pad if pad is enabled
+            if (pad.padEnabled)
+            {
+                Vector3 padRotation = hit.gameObject.transform.eulerAngles;
+                applyForce(Quaternion.Euler(padRotation.x, padRotation.y, padRotation.z) * pad.forceDir, pad.forceSpeed, pad.forceTime);
+            }
         }
     }
 
