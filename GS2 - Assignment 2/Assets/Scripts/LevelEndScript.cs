@@ -35,9 +35,22 @@ public class LevelEndScript : MonoBehaviour
     {
         if (enabled)
         {
-            if (SceneManager.GetActiveScene().name.Equals("Level 1")){
+            string sceneName = SceneManager.GetActiveScene().name;
+            if (sceneName.Equals("Level 1")) {
                 SceneManager.UnloadSceneAsync("Level 1");
                 SceneManager.LoadScene("Level 2");
+            }
+            else if (sceneName.Equals("Level 2")) {
+                SceneManager.UnloadSceneAsync("Level 2");
+                SceneManager.LoadScene("Level 3");
+            }
+            else if (sceneName.Equals("Level 3")) {
+                SceneManager.UnloadSceneAsync("Level 3");
+                SceneManager.LoadScene("Level 4");
+            }
+            else if (sceneName.Equals("Level 4")) {
+                SceneManager.UnloadSceneAsync("Level 4");
+                SceneManager.LoadScene("Level 5");
             }
         }
     }
