@@ -305,7 +305,6 @@ public class PlayerMovement : MonoBehaviour
             StopCoroutine(cameraRoutine);
             cameraRoutine = StartCoroutine(resetCamera());
         }
-        jumpCounter--;
     }
     IEnumerator rotateCamera(float angle)
     {
