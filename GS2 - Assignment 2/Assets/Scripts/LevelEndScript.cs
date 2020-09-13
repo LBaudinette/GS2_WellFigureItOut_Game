@@ -52,6 +52,13 @@ public class LevelEndScript : MonoBehaviour
                 SceneManager.UnloadSceneAsync("Level 4");
                 SceneManager.LoadScene("Level 5");
             }
+            else if (sceneName.Equals("Level 5"))
+            {
+                SceneManager.UnloadSceneAsync("Level 5");
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+                SceneManager.LoadScene("MainMenu");
+            }
         }
     }
 }
