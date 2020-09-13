@@ -12,9 +12,10 @@ public class PlayerMovement : MonoBehaviour
     public float speed, slopeForce, jumpForce, groundDistance;
     public int maxAirJumps;
     public LayerMask groundMask;
-    public Transform groundCheck, camera;
+    public Transform groundCheck, camera, spawnPoint;
     private CharacterController charController;
     private PlayerLook playerLook;
+    public GameObject player;
     private Animator animator;
     private int ? currentWall = 0, lastWall = 0;
     private bool isGrounded, isWallRunning, isJumping, isCrouching, isSliding, isSprinting, isOnSlope, wasGrounded, wasOnSlope;
@@ -46,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
     {
         charController = GetComponent<CharacterController>();
         playerLook = GetComponent<PlayerLook>();
-        speed = walkSpeed;
+        respawn();
     }
 
     // Update is called once per frame
@@ -61,14 +62,13 @@ public class PlayerMovement : MonoBehaviour
             }
             timer += Time.deltaTime;
         }
+
         movement();
 
     }
 
     //Jumping and gravity obtained from: https://youtu.be/_QajrabyTJc
     private void movement() {
-
-        UnityEngine.Debug.Log("speed = " + this.speed);
 
         wasGrounded = isGrounded;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -506,6 +506,15 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        UnityEngine.Debug.Log("hit trigger: " + other.gameObject.tag);
+        if (other.gameObject.tag == "DeathPlane")
+        {
+            respawn();
+        }
+    }
+
     public void applyForce(Vector3 dir, float forceSpeed, float forceTime)
     {
         if (bounce != null)
@@ -541,6 +550,15 @@ public class PlayerMovement : MonoBehaviour
     private void resetJumps()
     {
         this.jumpCounter = maxAirJumps;
+    }
+
+    private void respawn()
+    {
+        charController.enabled = false;
+        player.transform.position = spawnPoint.position;
+        player.transform.rotation = spawnPoint.rotation;
+        charController.enabled = true;
+        speed = walkSpeed;
     }
 
 }

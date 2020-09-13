@@ -255,6 +255,8 @@ MonoBehaviour:
     m_Bits: 256
   groundCheck: {fileID: 2341064475261874393}
   camera: {fileID: 227560266}
+  spawnPoint: {fileID: 0}
+  player: {fileID: 2341064475132904968}
 --- !u!1 &2341064475261874390
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ TagManager:
   - BouncePad
   - Switch
   - Enemy
+  - DeathPlane
   layers:
   - Default
   - TransparentFX
