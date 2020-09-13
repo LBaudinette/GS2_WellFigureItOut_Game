@@ -249,6 +249,7 @@ MonoBehaviour:
   slopeForce: 3
   jumpForce: 2
   groundDistance: 0.1
+  maxJumps: 2
   groundMask:
     serializedVersion: 2
     m_Bits: 256

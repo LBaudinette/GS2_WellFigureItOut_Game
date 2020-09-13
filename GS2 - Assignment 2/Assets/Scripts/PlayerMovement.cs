@@ -10,6 +10,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float speed, slopeForce, jumpForce, groundDistance;
+    public int maxJumps;
     public LayerMask groundMask;
     public Transform groundCheck, camera;
     private CharacterController charController;
@@ -18,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
     private int ? currentWall = 0, lastWall = 0;
     private bool isGrounded, isWallRunning, isJumping, isCrouching, isSliding, isSprinting, isOnSlope, wasGrounded;
     private float gravity = -9.81f; //default value of gravity in Unity
+    private int jumpCounter = 2;
     private float walkSpeed = 7f;
     private float sprintSpeed = 10f;
 
@@ -66,10 +68,14 @@ public class PlayerMovement : MonoBehaviour
     //Jumping and gravity obtained from: https://youtu.be/_QajrabyTJc
     private void movement() {
 
+        UnityEngine.Debug.Log("speed = " + this.speed);
+
         wasGrounded = isGrounded;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
         if (isGrounded)
         {
+            resetJumps();
 
             if (bounce != null)
             {
@@ -85,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
             if (velocity.y < 0)
             {
                 isJumping = false;
-                velocity.y = -2.0f;
+                resetGravity();
             }
 
             // sprinting inputs
@@ -102,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
             }
 
             // if sprinting, check for crouch and do slide, otherwise crouch
-            if (isSprinting)
+            if (isSprinting || this.speed >= sprintSpeed)
             {
                 if (Input.GetButtonDown("Crouch"))
                 {
@@ -124,7 +130,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (isSliding)
             {
-                // slide exit when speed too low or jumped
+                // slide exit on jump
                 if (this.speed < crouchSpeed || Input.GetButtonDown("Jump"))
                 {
                     exitSprint();
@@ -135,7 +141,6 @@ public class PlayerMovement : MonoBehaviour
                 {
                     exitSprint();
                     exitSlide();
-                    exitCrouch();
                 }
             }
         } else
@@ -162,16 +167,20 @@ public class PlayerMovement : MonoBehaviour
         //Jump Function using equation for gravity potential energy
         if (Input.GetButtonDown("Jump"))
         {
-            //UnityEngine.Debug.Log("jumping");
-            isJumping = true;
-            //StartCoroutine(rotateCameraLeft());
-
-            //If player jumps while wallrunning, stop any wallrunning
-            if (isWallRunning)
+            if (jumpCounter > 0)
             {
-                exitWallRun();
+                //UnityEngine.Debug.Log("jumping");
+                isJumping = true;
+                //StartCoroutine(rotateCameraLeft());
+
+                //If player jumps while wallrunning, stop any wallrunning
+                if (isWallRunning)
+                {
+                    exitWallRun();
+                }
+                velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
+                jumpCounter--;
             }
-            velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
         }
 
         if (onSlope())
@@ -266,6 +275,7 @@ public class PlayerMovement : MonoBehaviour
 
     void enterWallRun(RaycastHit wall)
     {
+        resetJumps();
         currentWall = wall.collider.gameObject.GetInstanceID();
         isWallRunning = true;
 
@@ -350,6 +360,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 movement;
         if (isSliding)
         {
+            // restrict x axis movement if sliding
             movement = new Vector3(Input.GetAxisRaw("Horizontal") * speed * slideHorizontalMoveMult, 0.0f, Math.Abs(Input.GetAxisRaw("Vertical") * speed));
         } else
         {
@@ -398,10 +409,7 @@ public class PlayerMovement : MonoBehaviour
         isCrouching = false;
         isSliding = false;
         charController.height = standingHeight;
-        if (isSprinting)
-        {
-            this.speed = walkSpeed;
-        }
+        this.speed = walkSpeed;
     }
 
     private void enterSlide()
@@ -430,7 +438,7 @@ public class PlayerMovement : MonoBehaviour
         {
             this.speed = crouchSpeed;
         }
-        else if (!isCrouching)
+        else
         {
             charController.height = standingHeight;
             this.speed = walkSpeed;
@@ -444,9 +452,16 @@ public class PlayerMovement : MonoBehaviour
         while (elapsedTime < slideTime)
         {
             this.speed = Mathf.Lerp(slideSpeed, 0.0f, elapsedTime / slideTime);
+            if (this.speed < crouchSpeed)
+            {
+                this.speed = crouchSpeed;
+                break;
+            }
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+
+        exitSlide();
 
     }
 
@@ -463,13 +478,15 @@ public class PlayerMovement : MonoBehaviour
             // bounce player off pad if pad is enabled
             if (pad.padEnabled)
             {
+                resetGravity();
+                resetJumps();
                 Vector3 padRotation = hit.gameObject.transform.eulerAngles;
                 applyForce(Quaternion.Euler(padRotation.x, padRotation.y, padRotation.z) * pad.forceDir, pad.forceSpeed, pad.forceTime);
             }
         }
     }
 
-    private void applyForce(Vector3 dir, float forceSpeed, float forceTime)
+    public void applyForce(Vector3 dir, float forceSpeed, float forceTime)
     {
         if (bounce != null)
         {
@@ -494,6 +511,16 @@ public class PlayerMovement : MonoBehaviour
         }
 
         exitSlide();
+    }
+
+    public void resetGravity()
+    {
+        this.velocity.y = -2.0f;
+    }
+
+    private void resetJumps()
+    {
+        this.jumpCounter = maxJumps;
     }
 
 }

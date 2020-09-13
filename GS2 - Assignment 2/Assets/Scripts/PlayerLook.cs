@@ -47,14 +47,12 @@ public class PlayerLook : MonoBehaviour
 
     public IEnumerator sprintFoVLerp(bool isSprinting)
     {
-        UnityEngine.Debug.Log("isSprinting = " + isSprinting);
         float elapsedTime = 0;
         // set endpoint of change based on whether player is sprinting
         float endFoV = isSprinting ? sprintFoV : defaultFoV;
 
         while (elapsedTime < sprintFoVChangeTime)
         {
-            UnityEngine.Debug.Log("FoV = " + camera.fieldOfView);
             camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, endFoV, elapsedTime / sprintFoVChangeTime);
             elapsedTime += Time.deltaTime;
             yield return null;
