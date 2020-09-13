@@ -10,14 +10,14 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float speed, slopeForce, jumpForce, groundDistance;
-    public int maxJumps;
+    public int maxAirJumps;
     public LayerMask groundMask;
     public Transform groundCheck, camera;
     private CharacterController charController;
     private PlayerLook playerLook;
     private Animator animator;
     private int ? currentWall = 0, lastWall = 0;
-    private bool isGrounded, isWallRunning, isJumping, isCrouching, isSliding, isSprinting, isOnSlope, wasGrounded;
+    private bool isGrounded, isWallRunning, isJumping, isCrouching, isSliding, isSprinting, isOnSlope, wasGrounded, wasOnSlope;
     private float gravity = -9.81f; //default value of gravity in Unity
     private int jumpCounter = 2;
     private float walkSpeed = 7f;
@@ -73,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
         wasGrounded = isGrounded;
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if (isGrounded)
+        if (isGrounded || isOnSlope)
         {
             resetJumps();
 
@@ -85,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
             lastWall = null;
             //UnityEngine.Debug.Log("grounded");
             // check if on slope
+            wasOnSlope = isOnSlope;
             isOnSlope = onSlope();
 
             // reset y velocity if on ground
@@ -97,25 +98,24 @@ public class PlayerMovement : MonoBehaviour
             // sprinting inputs
             // enter sprint if not sliding/crouching/sprinting and sprint key is pressed and player is moving forward
             //print("isSliding " + isSliding + "isSprinting " + isSprinting + "IsCrouching " + isCrouching);
-            if (!isSliding && !isSprinting && !isCrouching && Input.GetButtonDown("Sprint") && Input.GetAxisRaw("Vertical") > 0)
+            if ((!isSliding && !isSprinting && !isCrouching && Input.GetButtonDown("Sprint") && Input.GetAxisRaw("Vertical") > 0) || (!isSprinting  && speed >= sprintSpeed))
             {
                 enterSprint();
-            }
+            } 
             // exit sprint if too slow
             if (isSprinting && (this.speed < sprintSpeed || Input.GetAxisRaw("Horizontal") > 0f || Input.GetAxisRaw("Vertical") == 0f))
             {
                 exitSprint();
             }
 
-            // if sprinting, check for crouch and do slide, otherwise crouch
+            // if sprinting, above speed threshold, or on slope, do slide, otherwise crouch
             if (isSprinting || this.speed >= sprintSpeed)
             {
                 if (Input.GetButtonDown("Crouch"))
                 {
                     enterSlide();
                 }
-                
-            } else
+            } else 
             {
                 // crouching inputs
                 if (Input.GetButtonDown("Crouch"))
@@ -143,14 +143,26 @@ public class PlayerMovement : MonoBehaviour
                     exitSlide();
                 }
             }
-        } else
+        } else if (!isGrounded && !isOnSlope)
         {
             if (wasGrounded)
             {
-                this.isSprinting = false;
-                this.isCrouching = false;
+                exitSprint();
+                isCrouching = false;
+                isSliding = false;
                 charController.height = standingHeight;
                 exitSlide();
+            }
+
+            // accelerate player in midair if they are moving forward
+            if (speed < sprintSpeed && Input.GetAxisRaw("Vertical") > 0)
+            {
+                speed += 0.01f;
+                if (speed >= sprintSpeed)
+                {
+                    speed = sprintSpeed;
+                    isSprinting = true;
+                }
             }
         }
 
@@ -167,7 +179,8 @@ public class PlayerMovement : MonoBehaviour
         //Jump Function using equation for gravity potential energy
         if (Input.GetButtonDown("Jump"))
         {
-            if (jumpCounter > 0)
+            bool inMidairCanJump = jumpCounter > 0 && !isGrounded;
+            if (inMidairCanJump || isGrounded)
             {
                 //UnityEngine.Debug.Log("jumping");
                 isJumping = true;
@@ -179,13 +192,15 @@ public class PlayerMovement : MonoBehaviour
                     exitWallRun();
                 }
                 velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
-                jumpCounter--;
+                if (inMidairCanJump)
+                {
+                    jumpCounter--;
+                }
             }
         }
 
-        if (onSlope())
+        if (isOnSlope)
         {
-            print("slope");
             charController.Move(Vector3.down * slopeForce * Time.deltaTime);
         }
 
@@ -290,6 +305,7 @@ public class PlayerMovement : MonoBehaviour
             StopCoroutine(cameraRoutine);
             cameraRoutine = StartCoroutine(resetCamera());
         }
+        jumpCounter--;
     }
     IEnumerator rotateCamera(float angle)
     {
@@ -346,9 +362,10 @@ public class PlayerMovement : MonoBehaviour
         RaycastHit hit;
 
         //if the normal of the surface the player is standing on is not pointing up, then it is a slope
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, 10)) {
-            if (hit.normal != Vector3.up) {
-
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 10))
+        {
+            if (hit.normal != Vector3.up)
+            {
                 return true;
             }
         }
@@ -382,10 +399,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void exitSprint()
     {
-        isSprinting = false;
-        playerLook.sprint(isSprinting);
-        if (!isSliding)
+        if (!isSliding && isGrounded)
         {
+            isSprinting = false;
+            playerLook.sprint(isSprinting);
             if (isCrouching)
             {
                 this.speed = crouchSpeed;
@@ -429,19 +446,22 @@ public class PlayerMovement : MonoBehaviour
             StopCoroutine(slideRoutine);
         }
 
-        if (isSprinting)
+        if (isGrounded)
         {
-            charController.height = standingHeight;
-            this.speed = sprintSpeed;
-        }
-        else if (isCrouching)
-        {
-            this.speed = crouchSpeed;
-        }
-        else
-        {
-            charController.height = standingHeight;
-            this.speed = walkSpeed;
+            if (isSprinting)
+            {
+                charController.height = standingHeight;
+                this.speed = sprintSpeed;
+            }
+            else if (isCrouching)
+            {
+                this.speed = crouchSpeed;
+            }
+            else
+            {
+                charController.height = standingHeight;
+                this.speed = walkSpeed;
+            }
         }
     }
 
@@ -520,7 +540,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void resetJumps()
     {
-        this.jumpCounter = maxJumps;
+        this.jumpCounter = maxAirJumps;
     }
 
 }
