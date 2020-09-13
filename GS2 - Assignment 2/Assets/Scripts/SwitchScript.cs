@@ -11,6 +11,7 @@ public class SwitchScript : MonoBehaviour
     void Start()
     {
         enabled = false;
+        thisSwitch.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
     }
 
     // Update is called once per frame
@@ -24,7 +25,10 @@ public class SwitchScript : MonoBehaviour
         if (!enabled)
         {
             enabled = true;
+            Debug.Log("EMISSION");
             thisSwitch.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+            //thisSwitch.GetComponent<Renderer>().material.;
+
             parentObj.GetComponent<LevelEndScript>().switchActivated();
         }
     }
