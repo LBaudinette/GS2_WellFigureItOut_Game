@@ -302,6 +302,7 @@ public class PlayerMovement : MonoBehaviour
     {
         currentWall = wall.collider.gameObject.GetInstanceID();
         isWallRunning = true;
+        isBouncing = false;
 
     }
     void exitWallRun()
