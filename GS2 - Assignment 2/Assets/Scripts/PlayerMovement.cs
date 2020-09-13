@@ -534,7 +534,7 @@ public class PlayerMovement : MonoBehaviour
             // quadratic ease out to simulate projectile motion
             currSpeed = -(-forceSpeed) * 2f * currTime * (currTime - 2) + forceSpeed;
             charController.Move(dir * currSpeed);
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.fixedDeltaTime;
             yield return null;
         }
 
