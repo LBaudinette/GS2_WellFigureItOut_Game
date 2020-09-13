@@ -10,8 +10,8 @@ public class LevelSelectScript : MonoBehaviour
     public GameObject parentCanvas;
     private string levelSelected;
     public void buttonAction(GameObject buttonPressed) {
-        
         switch (buttonPressed.name) {
+            
             case "Main Menu Button":
                 Instantiate(mainMenuPrefab);
                 Destroy(parentCanvas);
