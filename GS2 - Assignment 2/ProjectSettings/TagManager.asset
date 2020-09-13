@@ -9,6 +9,7 @@ TagManager:
   - Switch
   - Enemy
   - DeathPlane
+  - SceneFader
   layers:
   - Default
   - TransparentFX

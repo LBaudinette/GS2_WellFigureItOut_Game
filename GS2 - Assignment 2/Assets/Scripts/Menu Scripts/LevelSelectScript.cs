@@ -25,6 +25,15 @@ public class LevelSelectScript : MonoBehaviour
             case "Level 2 Button":
                 levelSelected = "Level 2";
                 break;
+            case "Level 3 Button":
+                levelSelected = "Level 3";
+                break;
+            case "Level 4 Button":
+                levelSelected = "Level 4";
+                break;
+            case "Level 5 Button":
+                levelSelected = "Level 5";
+                break;
 
         }
     }
