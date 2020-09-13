@@ -27,9 +27,16 @@ public class EnemyScript : MonoBehaviour
     }
 
     void moveToPlayer() {
+        Vector3 playerDir;
+        if(gameObject.name == "Air Enemy"){
+            playerDir = new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z);
+        }
+        else {
+            playerDir = new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z);
+        }
         transform.LookAt(player.transform, Vector3.up);
         float step = speed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, player.transform.position, step);
+        transform.position = Vector3.MoveTowards(transform.position, playerDir, step);
 
     }
 
