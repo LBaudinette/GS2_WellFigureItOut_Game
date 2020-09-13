@@ -2394,7 +2394,7 @@ PrefabInstance:
     - target: {fileID: 8268071449152123237, guid: b3494fbc06565c74a92da539b640efea,
         type: 3}
       propertyPath: m_Name
-      value: LevelEndSwitch
+      value: LevelEndSwitch2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b3494fbc06565c74a92da539b640efea, type: 3}
