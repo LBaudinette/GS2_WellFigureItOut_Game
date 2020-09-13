@@ -36,7 +36,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 slideForward;
     private Coroutine slideRoutine = null;
 
-    private Coroutine bounce = null;
+    private bool isBouncing;
+    private float bounceSpeed;
+    private Vector3 bounceDir;
 
     Vector3 velocity; // Used for gravity
 
@@ -75,12 +77,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (isGrounded || isOnSlope)
         {
-            resetJumps();
-
-            if (bounce != null)
+            if (isBouncing)
             {
-                StopCoroutine(bounce);
+                bounceSpeed = 0f;
+                isBouncing = false;
             }
+
+            resetJumps();
 
             lastWall = null;
             //UnityEngine.Debug.Log("grounded");
@@ -173,15 +176,16 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            velocity.y = 0.0f;
+            velocity.y = 0f;
         }
 
         //Jump Function using equation for gravity potential energy
         if (Input.GetButtonDown("Jump"))
         {
-            bool inMidairCanJump = jumpCounter > 0 && !isGrounded;
+            bool inMidairCanJump = jumpCounter > 0 && !isGrounded && !isWallRunning;
             if (inMidairCanJump || isGrounded)
             {
+                isBouncing = false;
                 //UnityEngine.Debug.Log("jumping");
                 isJumping = true;
                 //StartCoroutine(rotateCameraLeft());
@@ -205,6 +209,12 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //UnityEngine.Debug.Log("Speed = " + this.speed);
+
+        if (isBouncing)
+        {
+            charController.Move(bounceDir * bounceSpeed);
+            bounceSpeed -= 0.3f * Time.deltaTime;
+        }
 
         move();
 
@@ -290,13 +300,13 @@ public class PlayerMovement : MonoBehaviour
 
     void enterWallRun(RaycastHit wall)
     {
-        resetJumps();
         currentWall = wall.collider.gameObject.GetInstanceID();
         isWallRunning = true;
 
     }
     void exitWallRun()
     {
+        resetJumps();
         isWallRunning = false;
         lastWall = currentWall;
         currentWall = null;
@@ -500,7 +510,7 @@ public class PlayerMovement : MonoBehaviour
                 resetGravity();
                 resetJumps();
                 Vector3 padRotation = hit.gameObject.transform.eulerAngles;
-                applyForce(Quaternion.Euler(padRotation.x, padRotation.y, padRotation.z) * pad.forceDir, pad.forceSpeed, pad.forceTime);
+                applyForce(Quaternion.Euler(padRotation.x, padRotation.y, padRotation.z) * pad.forceDir, pad.forceSpeed);
             }
         }
     }
@@ -514,31 +524,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void applyForce(Vector3 dir, float forceSpeed, float forceTime)
+    private void applyForce(Vector3 dir, float forceSpeed)
     {
-        if (bounce != null)
-        {
-            StopCoroutine(bounce);
-        }
-        bounce = StartCoroutine(applyForceRoutine(dir, forceSpeed, forceTime));
-    }
-
-    private IEnumerator applyForceRoutine(Vector3 dir, float forceSpeed, float forceTime)
-    {
-        float elapsedTime = 0f;
-        float currTime;
-        float currSpeed = forceSpeed;
-        while (currSpeed > 0.0f)
-        {
-            currTime = elapsedTime / forceTime;
-            // quadratic ease out to simulate projectile motion
-            currSpeed = -(-forceSpeed) * 2f * currTime * (currTime - 2) + forceSpeed;
-            charController.Move(dir * currSpeed);
-            elapsedTime += Time.fixedDeltaTime;
-            yield return null;
-        }
-
-        exitSlide();
+        isBouncing = true;
+        isGrounded = false;
+        bounceSpeed = forceSpeed;
+        bounceDir = dir;
     }
 
     public void resetGravity()
@@ -558,6 +549,11 @@ public class PlayerMovement : MonoBehaviour
         player.transform.rotation = spawnPoint.rotation;
         charController.enabled = true;
         speed = walkSpeed;
+    }
+
+    private void setBouncing(bool set)
+    {
+        this.isBouncing = set;
     }
 
 }

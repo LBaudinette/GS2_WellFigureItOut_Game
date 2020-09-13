@@ -361,6 +361,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 0.20392026
       objectReference: {fileID: 0}
+    - target: {fileID: 5781199887377001933, guid: 4a548766e1fff1a4f8a6e5286f91c1d7,
+        type: 3}
+      propertyPath: forceSpeed
+      value: 0.35
+      objectReference: {fileID: 0}
     - target: {fileID: 5781199887377001934, guid: 4a548766e1fff1a4f8a6e5286f91c1d7,
         type: 3}
       propertyPath: m_Name
@@ -2480,6 +2485,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 0.20392026
+      objectReference: {fileID: 0}
+    - target: {fileID: 5781199887377001933, guid: 4a548766e1fff1a4f8a6e5286f91c1d7,
+        type: 3}
+      propertyPath: forceSpeed
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 5781199887377001934, guid: 4a548766e1fff1a4f8a6e5286f91c1d7,
         type: 3}

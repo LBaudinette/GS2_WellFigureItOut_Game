@@ -6,7 +6,7 @@ public class BouncePad : MonoBehaviour
 {
     public Vector3 forceDir;
     public bool padEnabled;
-    public float forceSpeed, forceTime;
+    public float forceSpeed;
 
     // Start is called before the first frame update
     void Start()
