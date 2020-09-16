@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform groundCheck, camera, spawnPoint;
     private CharacterController charController;
     private PlayerLook playerLook;
-    public GameObject player;
+    //public GameObject player;
     private Animator animator;
     private int ? currentWall = 0, lastWall = 0;
     private bool isGrounded, isWallRunning, isJumping, isCrouching, isSliding, isSprinting, isOnSlope, wasGrounded, wasOnSlope;
@@ -178,13 +178,16 @@ public class PlayerMovement : MonoBehaviour
         {
             velocity.y = 0f;
         }
-
         //Jump Function using equation for gravity potential energy
         if (Input.GetButtonDown("Jump"))
         {
-            bool inMidairCanJump = jumpCounter > 0 && !isGrounded && !isWallRunning;
+            print("JUMP");
+            bool inMidairCanJump = jumpCounter > 0 && !isGrounded;
+            print("CAN JUMP: " + inMidairCanJump);
+            print("isGrounded " + isGrounded);
             if (inMidairCanJump || isGrounded)
             {
+                print("JUMP 2");
                 isBouncing = false;
                 //UnityEngine.Debug.Log("jumping");
                 isJumping = true;
@@ -193,6 +196,7 @@ public class PlayerMovement : MonoBehaviour
                 //If player jumps while wallrunning, stop any wallrunning
                 if (isWallRunning)
                 {
+                    print("EXIT JUMP");
                     exitWallRun();
                 }
                 velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
@@ -307,6 +311,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void exitWallRun()
     {
+        print("Exit");
         resetJumps();
         isWallRunning = false;
         lastWall = currentWall;
@@ -319,12 +324,12 @@ public class PlayerMovement : MonoBehaviour
     }
     IEnumerator rotateCamera(float angle)
     {
-        print("ROTATION: " + camera.transform.eulerAngles.z);
+        //print("ROTATION: " + camera.transform.eulerAngles.z);
 
         Vector3 currentRotation = camera.transform.eulerAngles;
         Vector3 targetRotation = new Vector3(camera.transform.eulerAngles.x, camera.transform.eulerAngles.y, angle);
         Vector3 currentRotate;
-        print("CURRENT: " + currentRotation + " TARGET: " + targetRotation);
+        //print("CURRENT: " + currentRotation + " TARGET: " + targetRotation);
         float duration = 0.3f;
         float time = 0.0f;
 
@@ -546,8 +551,8 @@ public class PlayerMovement : MonoBehaviour
     private void respawn()
     {
         charController.enabled = false;
-        player.transform.position = spawnPoint.position;
-        player.transform.rotation = spawnPoint.rotation;
+        transform.position = spawnPoint.position;
+        transform.rotation = spawnPoint.rotation;
         charController.enabled = true;
         speed = walkSpeed;
     }
