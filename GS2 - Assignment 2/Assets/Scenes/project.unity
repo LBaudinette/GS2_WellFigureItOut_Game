@@ -2032,13 +2032,15 @@ MonoBehaviour:
   slopeForce: 3
   jumpForce: 2
   groundDistance: 0.1
-  maxAirJumps: 0
+  maxAirJumps: 1
   groundMask:
     serializedVersion: 2
     m_Bits: 256
   groundCheck: {fileID: 1728997464}
   camera: {fileID: 227560266}
   spawnPoint: {fileID: 1206744764}
+  isMoving: 0
+  isSprinting: 0
 --- !u!1001 &2106975939
 PrefabInstance:
   m_ObjectHideFlags: 0

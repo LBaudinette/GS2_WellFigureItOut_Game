@@ -13,12 +13,15 @@ public class PlayerMovement : MonoBehaviour
     public int maxAirJumps;
     public LayerMask groundMask;
     public Transform groundCheck, camera, spawnPoint;
+    //Public booleans for gun script
+    public bool isMoving, isSprinting;
     private CharacterController charController;
     private PlayerLook playerLook;
     //public GameObject player;
     private Animator animator;
     private int ? currentWall = 0, lastWall = 0;
-    private bool isGrounded, isWallRunning, isJumping, isCrouching, isSliding, isSprinting, isOnSlope, wasGrounded, wasOnSlope;
+    private bool isGrounded, isWallRunning, isJumping, isCrouching, isSliding,
+        isOnSlope, wasGrounded, wasOnSlope;
     private float gravity = -9.81f; //default value of gravity in Unity
     private int jumpCounter = 2;
     private float walkSpeed = 7f;
@@ -39,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isBouncing;
     private float bounceSpeed;
     private Vector3 bounceDir;
+
 
     Vector3 velocity; // Used for gravity
 
@@ -397,8 +401,17 @@ public class PlayerMovement : MonoBehaviour
         } else
         {
             movement = new Vector3(Input.GetAxisRaw("Horizontal") * speed, 0.0f, Input.GetAxisRaw("Vertical") * speed);
+        } 
+
+        if(movement.x != 0.0f && movement.z != 0.0f) {
+            isMoving = true;
         }
-        //UnityEngine.Debug.Log("moving");
+        else {
+            isMoving = false;
+        }
+
+        isMoving = (movement.x != 0.0f || movement.z != 0.0f) ? true : false;
+
         movement *= Time.deltaTime;
         movement = transform.TransformDirection(movement);
         charController.Move(movement);
@@ -427,6 +440,7 @@ public class PlayerMovement : MonoBehaviour
                 this.speed = walkSpeed;
             }
         }
+        isSprinting = false;
     }
 
     private void enterCrouch()
