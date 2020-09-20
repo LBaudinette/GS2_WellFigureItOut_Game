@@ -29,23 +29,7 @@ public class GunScript : MonoBehaviour {
 
     private void LateUpdate() {
         lookSway();
-        if (playerMovement.isSprinting) {
-            weaponSway(idleCounter, 0.08f, 0.08f);
-            idleCounter += Time.deltaTime * 8;
-            //Lerp to target position so that weapon does no 'snap' when changing between movement types
-            transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, Time.deltaTime * 4);
-        }
-        else if (playerMovement.isMoving) {
-            weaponSway(idleCounter, 0.05f, 0.05f );
-            idleCounter += Time.deltaTime * 2;
-            transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, Time.deltaTime * 4);
-        }
-        else {
-            weaponSway(idleCounter, 0.01f, 0.01f);
-            idleCounter += Time.deltaTime;
-            transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, Time.deltaTime * 4);
-
-        }
+        movementSway();
     }
 
     void shoot() {
@@ -87,15 +71,46 @@ public class GunScript : MonoBehaviour {
         transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, Time.deltaTime * smooth);
     }
 
+    private void movementSway() {
+        //TODO: Clean up this if else tree
+        if (playerMovement.isWallRunning) {
+            /*Subtract 1 from x as Mathf.PingPong starts at 0, and we need
+            values from -1 to 1 for parabola */
+            wallRunSway((Mathf.PingPong(Time.time * 6f, 4f) - 2), 0.1f, 0.01f);
+
+            //Lerp to target position so that weapon does not 'snap' when changing between movement types
+            transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, Time.deltaTime * 8);
+        }
+        else if (playerMovement.isSprinting) {
+            weaponSway(idleCounter, 0.08f, 0.08f);
+            idleCounter += Time.deltaTime * 8;
+            transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, Time.deltaTime * 4);
+        }
+        else if (playerMovement.isMoving) {
+            weaponSway(idleCounter, 0.05f, 0.05f);
+            idleCounter += Time.deltaTime * 2;
+            transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, Time.deltaTime * 4);
+        }
+        else {
+            weaponSway(idleCounter, 0.01f, 0.01f);
+            idleCounter += Time.deltaTime;
+            transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, Time.deltaTime * 4);
+        }
+    }
+
     private void OnGUI() {
         GUI.DrawTexture(new Rect((Screen.width / 2) - (crosshair.width / 2), 
              (Screen.height / 2) - crosshair.height / 2, crosshair.width, crosshair.height), crosshair);
     }
 
     //Sets target position to lerp to for weapon sway during movement
-    void weaponSway(float x, float xSwayIntensity, float ySwayIntensity) {
+    private void weaponSway(float x, float xSwayIntensity, float ySwayIntensity) {
 
         //in a 2D space, Cos gives x coordinate and Sin gives y coordinate
         targetPosition = new Vector3(Mathf.Cos(x) * xSwayIntensity, Mathf.Sin(2 * x) * ySwayIntensity, transform.localPosition.z);
+    }
+
+    private void wallRunSway(float x, float xSwayIntensity, float ySwayIntensity) {
+        targetPosition = new Vector3((x)  * xSwayIntensity, -Mathf.Pow(x,2)  * ySwayIntensity, transform.localPosition.z);
     }
 }

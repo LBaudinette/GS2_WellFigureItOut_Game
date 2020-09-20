@@ -14,13 +14,13 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundMask;
     public Transform groundCheck, camera, spawnPoint;
     //Public booleans for gun script
-    public bool isMoving, isSprinting;
+    public bool isMoving, isSprinting, isWallRunning;
     private CharacterController charController;
     private PlayerLook playerLook;
     //public GameObject player;
     private Animator animator;
     private int ? currentWall = 0, lastWall = 0;
-    private bool isGrounded, isWallRunning, isJumping, isCrouching, isSliding,
+    private bool isGrounded, isJumping, isCrouching, isSliding,
         isOnSlope, wasGrounded, wasOnSlope;
     private float gravity = -9.81f; //default value of gravity in Unity
     private int jumpCounter = 2;
