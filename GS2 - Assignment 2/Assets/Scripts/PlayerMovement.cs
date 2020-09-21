@@ -140,13 +140,11 @@ public class PlayerMovement : MonoBehaviour
                 // slide exit on jump
                 if (this.speed < crouchSpeed || Input.GetButtonDown("Jump"))
                 {
-                    exitSprint();
                     exitSlide();
                 }
                 // slide exit when releasing crouch
                 if (Input.GetButtonUp("Crouch"))
                 {
-                    exitSprint();
                     exitSlide();
                 }
             }
@@ -191,23 +189,22 @@ public class PlayerMovement : MonoBehaviour
             print("isGrounded " + isGrounded);
             if (inMidairCanJump || isGrounded)
             {
-                print("JUMP 2");
-                isBouncing = false;
-                //UnityEngine.Debug.Log("jumping");
                 isJumping = true;
                 //StartCoroutine(rotateCameraLeft());
-
-                //If player jumps while wallrunning, stop any wallrunning
-                if (isWallRunning)
-                {
-                    print("EXIT JUMP");
-                    exitWallRun();
-                }
+                isBouncing = false;
+                //UnityEngine.Debug.Log("jumping");
                 velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
                 if (inMidairCanJump)
                 {
                     jumpCounter--;
                 }
+            }
+
+            //If player jumps while wallrunning, stop any wallrunning
+            if (isWallRunning)
+            {
+                exitWallRun();
+                velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
             }
         }
 
@@ -216,12 +213,12 @@ public class PlayerMovement : MonoBehaviour
             charController.Move(Vector3.down * slopeForce * Time.deltaTime);
         }
 
-        //UnityEngine.Debug.Log("Speed = " + this.speed);
+        UnityEngine.Debug.Log("Speed = " + this.speed);
 
         if (isBouncing)
         {
-            charController.Move(bounceDir * bounceSpeed);
-            bounceSpeed -= 0.3f * Time.deltaTime;
+            charController.Move(bounceDir * bounceSpeed * Time.deltaTime);
+            bounceSpeed -= bounceSpeed * Time.deltaTime;
         }
 
         move();
@@ -460,9 +457,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void enterSlide()
     {
-        this.isSprinting = false;
-        this.isCrouching = true;
+        
         charController.height = crouchHeight;
+        this.isSprinting = false;
         this.isSliding = true;
         slideRoutine = StartCoroutine(slideLerp());
     }
@@ -482,8 +479,9 @@ public class PlayerMovement : MonoBehaviour
                 charController.height = standingHeight;
                 this.speed = sprintSpeed;
             }
-            else if (isCrouching)
+            else if (Input.GetButtonDown("Crouch"))
             {
+                enterCrouch();
                 this.speed = crouchSpeed;
             }
             else
@@ -509,8 +507,6 @@ public class PlayerMovement : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
-        exitSlide();
 
     }
 
