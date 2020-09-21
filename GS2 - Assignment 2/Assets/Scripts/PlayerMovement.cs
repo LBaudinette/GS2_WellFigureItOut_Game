@@ -13,12 +13,15 @@ public class PlayerMovement : MonoBehaviour
     public int maxAirJumps;
     public LayerMask groundMask;
     public Transform groundCheck, camera, spawnPoint;
+    //Public booleans for gun script
+    public bool isMoving, isSprinting, isWallRunning;
     private CharacterController charController;
     private PlayerLook playerLook;
-    public GameObject player;
+    //public GameObject player;
     private Animator animator;
     private int ? currentWall = 0, lastWall = 0;
-    private bool isGrounded, isWallRunning, isJumping, isCrouching, isSliding, isSprinting, isOnSlope, wasGrounded, wasOnSlope;
+    private bool isGrounded, isJumping, isCrouching, isSliding,
+        isOnSlope, wasGrounded, wasOnSlope;
     private float gravity = -9.81f; //default value of gravity in Unity
     private int jumpCounter = 2;
     private float walkSpeed = 7f;
@@ -39,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isBouncing;
     private float bounceSpeed;
     private Vector3 bounceDir;
+
 
     Vector3 velocity; // Used for gravity
 
@@ -176,11 +180,13 @@ public class PlayerMovement : MonoBehaviour
         {
             velocity.y = 0f;
         }
-
         //Jump Function using equation for gravity potential energy
         if (Input.GetButtonDown("Jump"))
         {
-            bool inMidairCanJump = jumpCounter > 0 && !isGrounded && !isWallRunning;
+            print("JUMP");
+            bool inMidairCanJump = jumpCounter > 0 && !isGrounded;
+            print("CAN JUMP: " + inMidairCanJump);
+            print("isGrounded " + isGrounded);
             if (inMidairCanJump || isGrounded)
             {
                 isJumping = true;
@@ -306,6 +312,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void exitWallRun()
     {
+        print("Exit");
         resetJumps();
         isWallRunning = false;
         lastWall = currentWall;
@@ -318,12 +325,12 @@ public class PlayerMovement : MonoBehaviour
     }
     IEnumerator rotateCamera(float angle)
     {
-        print("ROTATION: " + camera.transform.eulerAngles.z);
+        //print("ROTATION: " + camera.transform.eulerAngles.z);
 
         Vector3 currentRotation = camera.transform.eulerAngles;
         Vector3 targetRotation = new Vector3(camera.transform.eulerAngles.x, camera.transform.eulerAngles.y, angle);
         Vector3 currentRotate;
-        print("CURRENT: " + currentRotation + " TARGET: " + targetRotation);
+        //print("CURRENT: " + currentRotation + " TARGET: " + targetRotation);
         float duration = 0.3f;
         float time = 0.0f;
 
@@ -391,8 +398,17 @@ public class PlayerMovement : MonoBehaviour
         } else
         {
             movement = new Vector3(Input.GetAxisRaw("Horizontal") * speed, 0.0f, Input.GetAxisRaw("Vertical") * speed);
+        } 
+
+        if(movement.x != 0.0f && movement.z != 0.0f) {
+            isMoving = true;
         }
-        //UnityEngine.Debug.Log("moving");
+        else {
+            isMoving = false;
+        }
+
+        isMoving = (movement.x != 0.0f || movement.z != 0.0f) ? true : false;
+
         movement *= Time.deltaTime;
         movement = transform.TransformDirection(movement);
         charController.Move(movement);
@@ -421,6 +437,7 @@ public class PlayerMovement : MonoBehaviour
                 this.speed = walkSpeed;
             }
         }
+        isSprinting = false;
     }
 
     private void enterCrouch()
@@ -544,8 +561,8 @@ public class PlayerMovement : MonoBehaviour
     private void respawn()
     {
         charController.enabled = false;
-        player.transform.position = spawnPoint.position;
-        player.transform.rotation = spawnPoint.rotation;
+        transform.position = spawnPoint.position;
+        transform.rotation = spawnPoint.rotation;
         charController.enabled = true;
         speed = walkSpeed;
     }
