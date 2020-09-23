@@ -10,6 +10,7 @@ TagManager:
   - Enemy
   - DeathPlane
   - SceneFader
+  - Gun
   layers:
   - Default
   - TransparentFX

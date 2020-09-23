@@ -185,13 +185,10 @@ public class PlayerMovement : MonoBehaviour
         //Jump Function using equation for gravity potential energy
         if (Input.GetButtonDown("Jump"))
         {
-            print("JUMP");
             bool inMidairCanJump = jumpCounter > 0 && !isGrounded;
-            print("CAN JUMP: " + inMidairCanJump);
-            print("isGrounded " + isGrounded);
+
             if (inMidairCanJump || isGrounded)
             {
-                print("JUMP 2");
                 isBouncing = false;
                 //UnityEngine.Debug.Log("jumping");
                 isJumping = true;
@@ -200,7 +197,6 @@ public class PlayerMovement : MonoBehaviour
                 //If player jumps while wallrunning, stop any wallrunning
                 if (isWallRunning)
                 {
-                    print("EXIT JUMP");
                     exitWallRun();
                 }
                 velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
@@ -315,7 +311,6 @@ public class PlayerMovement : MonoBehaviour
     }
     void exitWallRun()
     {
-        print("Exit");
         resetJumps();
         isWallRunning = false;
         lastWall = currentWall;
