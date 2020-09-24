@@ -14,9 +14,9 @@ public class GunScript : MonoBehaviour {
     private LineRenderer laser;      
     
     private float nextShoot;                    //the time for when the player can shoot again
-    private float rateOfFire = 1f;              //the delay between when the player can shoot multiple times
+    private float rateOfFire = 0.5f;              //the delay between when the player can shoot multiple times
     private float weaponRange = 50.0f;          //range of the weapon if nothing is hit
-    private float laserTimer = 0.0f;            //how long it takes for the laser to disappear
+    private float laserTimer = 0.1f;            //how long it takes for the laser to disappear
     private float origStartWidth,origEndWidth;  //the original starting and ending widths for the line renderer
 
     public float rotationRecoverSpeed;          //How quickly the weapon rotation recovers from recoil

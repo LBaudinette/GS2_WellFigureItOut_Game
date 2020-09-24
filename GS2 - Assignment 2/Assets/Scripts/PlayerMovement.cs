@@ -153,13 +153,9 @@ public class PlayerMovement : MonoBehaviour
             if (isSliding)
             {
                 // slide exit on jump
-                if (this.speed < crouchSpeed || Input.GetButtonDown("Jump"))
+                if (this.speed <= crouchSpeed || Input.GetButtonDown("Jump") || Input.GetButtonUp("Crouch"))
                 {
-                    exitSlide();
-                }
-                // slide exit when releasing crouch
-                if (Input.GetButtonUp("Crouch"))
-                {
+                    UnityEngine.Debug.Log("Conditions met to exit slide");
                     exitSlide();
                 }
             }
@@ -226,7 +222,7 @@ public class PlayerMovement : MonoBehaviour
             charController.Move(Vector3.down * slopeForce * Time.deltaTime);
         }
 
-        UnityEngine.Debug.Log("Speed = " + this.speed);
+        //UnityEngine.Debug.Log("Speed = " + this.speed);
 
         if (isBouncing)
         {
@@ -490,20 +486,21 @@ public class PlayerMovement : MonoBehaviour
 
         if (isGrounded)
         {
-            if (isSprinting)
+            if (Input.GetButtonDown("Jump"))
             {
-                charController.height = standingHeight;
-                this.speed = sprintSpeed;
+
             }
-            else if (Input.GetButtonDown("Crouch"))
+            else if (Input.GetButton("Crouch"))
             {
+                playerLook.sprint(isSprinting);
                 enterCrouch();
                 this.speed = crouchSpeed;
             }
             else
             {
+                playerLook.sprint(isSprinting);
                 charController.height = standingHeight;
-                this.speed = walkSpeed;
+                this.speed = sprintSpeed;
             }
         }
     }
