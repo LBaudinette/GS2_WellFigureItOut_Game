@@ -219,6 +219,10 @@ public class PlayerMovement : MonoBehaviour
         {
             charController.Move(bounceDir * bounceSpeed * Time.deltaTime);
             bounceSpeed -= bounceSpeed * Time.deltaTime;
+            if (bounceSpeed <= 0)
+            {
+                isBouncing = false;
+            }
         }
 
         move();
