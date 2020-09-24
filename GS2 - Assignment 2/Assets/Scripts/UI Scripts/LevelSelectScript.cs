@@ -6,14 +6,28 @@ public class LevelSelectScript : MonoBehaviour
 {
     //Canvas for the main menu screen
     public GameObject mainMenuPrefab;
-    //Canvas that the Button Select game object is a child of
-    public GameObject parentCanvas;
+    public GameObject pauseMenuPrefab;
+    
+    private GameObject parentCanvas;
     private string levelSelected;
+
+    public GameObject previousCanvas;
+    //public GameObject PreviousCanvas {
+    //    get { return previousCanvas; }
+    //    set { previousCanvas = value; }
+    //}
+
+    private void Start() {
+        parentCanvas = transform.root.gameObject;
+    }
+    private void Update() {
+       // print(levelSelected);
+    }
     public void buttonAction(GameObject buttonPressed) {
         switch (buttonPressed.name) {
             
-            case "Main Menu Button":
-                Instantiate(mainMenuPrefab);
+            case "Back Button":
+                Instantiate(previousCanvas);
                 Destroy(parentCanvas);
                 break;
             case "Continue Button":

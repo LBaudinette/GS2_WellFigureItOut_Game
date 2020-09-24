@@ -28,6 +28,8 @@ public class PauseScript : MonoBehaviour
                 break;
             case "Level Select Button":
                 Instantiate(selectLevelPrefab);
+                selectLevelPrefab.GetComponentInChildren<LevelSelectScript>().previousCanvas 
+                    = (GameObject)Resources.Load("Menu Canvas Prefabs/Pause Canvas");
                 Destroy(parentCanvas);
                 break;
             case "Main Menu Button":
