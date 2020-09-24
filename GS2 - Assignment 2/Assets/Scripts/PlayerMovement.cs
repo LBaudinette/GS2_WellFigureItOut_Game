@@ -183,10 +183,8 @@ public class PlayerMovement : MonoBehaviour
         //Jump Function using equation for gravity potential energy
         if (Input.GetButtonDown("Jump"))
         {
-            print("JUMP");
             bool inMidairCanJump = jumpCounter > 0 && !isGrounded;
-            print("CAN JUMP: " + inMidairCanJump);
-            print("isGrounded " + isGrounded);
+
             if (inMidairCanJump || isGrounded)
             {
                 isJumping = true;
@@ -316,7 +314,6 @@ public class PlayerMovement : MonoBehaviour
     }
     void exitWallRun()
     {
-        print("Exit");
         resetJumps();
         isWallRunning = false;
         lastWall = currentWall;

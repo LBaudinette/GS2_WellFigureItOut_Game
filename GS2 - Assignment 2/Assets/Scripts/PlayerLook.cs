@@ -6,7 +6,7 @@ public class PlayerLook : MonoBehaviour
 {
     public float rotationSpeed;
     public Transform cameraTranform;
-    public Camera camera;
+    public Camera camera, gunCamera;
     private float minVertical = -90.0f;
     private float maxVertical = 90.0f;
     private float rotationY = 0;
@@ -20,7 +20,7 @@ public class PlayerLook : MonoBehaviour
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-
+        gunCamera = camera.transform.Find("Gun Camera").GetComponent<Camera>();
     }
 
     // Update is called once per frame
@@ -54,6 +54,7 @@ public class PlayerLook : MonoBehaviour
         while (elapsedTime < sprintFoVChangeTime)
         {
             camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, endFoV, elapsedTime / sprintFoVChangeTime);
+            gunCamera.fieldOfView = Mathf.Lerp(gunCamera.fieldOfView, endFoV, elapsedTime / sprintFoVChangeTime);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
