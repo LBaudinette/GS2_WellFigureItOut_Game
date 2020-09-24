@@ -6,22 +6,23 @@ public class LevelSelectScript : MonoBehaviour
 {
     //Canvas for the main menu screen
     public GameObject mainMenuPrefab;
-    public GameObject pauseMenuPrefab;
+    private GameObject pauseMenuPrefab;
     
     private GameObject parentCanvas;
     private string levelSelected;
 
     public GameObject previousCanvas;
-    //public GameObject PreviousCanvas {
-    //    get { return previousCanvas; }
-    //    set { previousCanvas = value; }
-    //}
+    public GameObject PreviousCanvas {
+        get { return previousCanvas; }
+        set { previousCanvas = value; }
+    }
 
     private void Start() {
         parentCanvas = transform.root.gameObject;
+        print(previousCanvas.name);
     }
     private void Update() {
-       // print(levelSelected);
+       
     }
     public void buttonAction(GameObject buttonPressed) {
         switch (buttonPressed.name) {

@@ -20,8 +20,8 @@ public class GunScript : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
-        if (GameManager.Instance.isPaused)
-            return;
+        //if (GameManager.Instance.isPaused)
+        //    return;
 
         if (Input.GetButtonDown("Fire1")) {
             shoot();
@@ -31,10 +31,6 @@ public class GunScript : MonoBehaviour {
     private void FixedUpdate() {
         lookSway();
         movementSway();
-    }
-
-    private void LateUpdate() {
-        
     }
 
     void shoot() {

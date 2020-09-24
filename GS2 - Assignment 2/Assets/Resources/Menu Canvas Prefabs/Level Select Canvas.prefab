@@ -2010,7 +2010,6 @@ GameObject:
   - component: {fileID: 4489614800849953185}
   - component: {fileID: 4489614800849953186}
   - component: {fileID: 4489614800849953187}
-  - component: {fileID: 4489614800849953184}
   m_Layer: 5
   m_Name: Continue Button
   m_TagString: Untagged
@@ -2129,22 +2128,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &4489614800849953184
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4489614800849953189}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01e854dd411bd9d4184455dbb8661a8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainMenuPrefab: {fileID: 1866430787819470777, guid: f049eb7b66b5a6b45a054200fec1c7d9,
-    type: 3}
-  parentCanvas: {fileID: 0}
-  previousMenu: {fileID: 0}
 --- !u!1 &4489614800938718740
 GameObject:
   m_ObjectHideFlags: 0
@@ -2586,8 +2569,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainMenuPrefab: {fileID: 1866430787819470777, guid: f049eb7b66b5a6b45a054200fec1c7d9,
     type: 3}
-  parentCanvas: {fileID: 4489614799458449111}
-  previousMenu: {fileID: 0}
+  previousCanvas: {fileID: 0}
 --- !u!1 &5865126375745298028
 GameObject:
   m_ObjectHideFlags: 0

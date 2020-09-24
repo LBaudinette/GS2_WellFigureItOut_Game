@@ -60,23 +60,18 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         //do not update if game is paused
-        if (GameManager.Instance.isPaused)
-            return;
+        //if (GameManager.Instance.isPaused)
+        //    return;
 
         //Pause Menu
         if (Input.GetButtonDown("Cancel") && !GameManager.Instance.isPaused) {
-            GameManager.Instance.isPaused = true;
-            Instantiate(Resources.Load("Menu Canvas Prefabs/Pause Canvas"));
-            enableCursor();
-            Time.timeScale = 0;
-            //return;
+            GameManager.Instance.pauseGame();
         }
-        else if(Input.GetButtonDown("Cancel") && GameManager.Instance.isPaused) {
-            GameManager.Instance.isPaused = false;
-            enableCursor();
-            Time.timeScale = 1;
+        else if (Input.GetButtonDown("Cancel") && GameManager.Instance.isPaused) {
+            GameManager.Instance.unPauseGame();
+
         }
-            
+
 
 
         checkWall();
@@ -595,15 +590,5 @@ public class PlayerMovement : MonoBehaviour
     {
         this.isBouncing = set;
     }
-
-    private void disableCursor() {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-    private void enableCursor() {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-    }
-
 }
 
