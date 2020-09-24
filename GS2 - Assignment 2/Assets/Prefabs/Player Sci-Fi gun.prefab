@@ -437,7 +437,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7653538810331838540}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.92, y: -0.6, z: 0.76}
+  m_LocalPosition: {x: 0.52, y: -0.67, z: 0.79}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6907207730206942835}
@@ -451,6 +451,31 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7349449573955621410}
     m_Modifications:
+    - target: {fileID: 1199691663204544377, guid: 7128d634484cd8d40a39c4ccb2715916,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2100305479370761761, guid: 7128d634484cd8d40a39c4ccb2715916,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311803649432385999, guid: 7128d634484cd8d40a39c4ccb2715916,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2818126998546931623, guid: 7128d634484cd8d40a39c4ccb2715916,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3432335378011139950, guid: 7128d634484cd8d40a39c4ccb2715916,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 3689419112296935766, guid: 7128d634484cd8d40a39c4ccb2715916,
         type: 3}
       propertyPath: camera
@@ -461,10 +486,25 @@ PrefabInstance:
       propertyPath: gunEnd
       value: 
       objectReference: {fileID: 2806832458224595592}
+    - target: {fileID: 3689419112296935766, guid: 7128d634484cd8d40a39c4ccb2715916,
+        type: 3}
+      propertyPath: rotationRecoverSpeed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3689419112296935766, guid: 7128d634484cd8d40a39c4ccb2715916,
+        type: 3}
+      propertyPath: positionRecoverSpeed
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 5948605261707022728, guid: 7128d634484cd8d40a39c4ccb2715916,
         type: 3}
       propertyPath: m_Name
       value: SciFi Gun
+      objectReference: {fileID: 0}
+    - target: {fileID: 5948605261707022728, guid: 7128d634484cd8d40a39c4ccb2715916,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 6468963860729645874, guid: 7128d634484cd8d40a39c4ccb2715916,
         type: 3}
@@ -520,6 +560,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9120309715466485884, guid: 7128d634484cd8d40a39c4ccb2715916,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7128d634484cd8d40a39c4ccb2715916, type: 3}
