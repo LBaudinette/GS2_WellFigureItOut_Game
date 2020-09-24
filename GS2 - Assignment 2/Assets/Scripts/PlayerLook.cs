@@ -23,9 +23,14 @@ public class PlayerLook : MonoBehaviour
         gunCamera = camera.transform.Find("Gun Camera").GetComponent<Camera>();
     }
 
+
     // Update is called once per frame
     void LateUpdate()
     {
+        if (GameManager.Instance.isPaused)
+            return;
+
+
         rotationX -= Input.GetAxis("Mouse Y") * rotationSpeed;
         rotationX = Mathf.Clamp(rotationX, minVertical, maxVertical);
 

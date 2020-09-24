@@ -11,7 +11,7 @@ public class LevelEndScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        enabled = false;
+        enabled = false;      
     }
 
     // Update is called once per frame

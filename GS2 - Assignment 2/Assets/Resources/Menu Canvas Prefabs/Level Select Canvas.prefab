@@ -735,7 +735,7 @@ GameObject:
   - component: {fileID: 4489614799466918779}
   - component: {fileID: 4489614799466918780}
   m_Layer: 5
-  m_Name: Main Menu Button
+  m_Name: Back Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2010,7 +2010,6 @@ GameObject:
   - component: {fileID: 4489614800849953185}
   - component: {fileID: 4489614800849953186}
   - component: {fileID: 4489614800849953187}
-  - component: {fileID: 4489614800849953184}
   m_Layer: 5
   m_Name: Continue Button
   m_TagString: Untagged
@@ -2129,21 +2128,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &4489614800849953184
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4489614800849953189}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01e854dd411bd9d4184455dbb8661a8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainMenuPrefab: {fileID: 1866430787819470777, guid: f049eb7b66b5a6b45a054200fec1c7d9,
-    type: 3}
-  parentCanvas: {fileID: 0}
 --- !u!1 &4489614800938718740
 GameObject:
   m_ObjectHideFlags: 0
@@ -2441,7 +2425,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<- Main Menu
+  m_text: '<- Back
 
 '
   m_isRightToLeft: 0
@@ -2512,10 +2496,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 4489614801435461641}
-    characterCount: 13
+    characterCount: 8
     spriteCount: 0
-    spaceCount: 3
-    wordCount: 4
+    spaceCount: 2
+    wordCount: 3
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -2585,7 +2569,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainMenuPrefab: {fileID: 1866430787819470777, guid: f049eb7b66b5a6b45a054200fec1c7d9,
     type: 3}
-  parentCanvas: {fileID: 4489614799458449111}
+  previousCanvas: {fileID: 0}
 --- !u!1 &5865126375745298028
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private int ? currentWall = 0, lastWall = 0;
     private bool isGrounded, isJumping, isCrouching, isSliding,
-        isOnSlope, wasGrounded, wasOnSlope;
+        isOnSlope, wasGrounded, wasOnSlope, isPaused;
     private float gravity = -9.81f; //default value of gravity in Unity
     private int jumpCounter = 2;
     private float walkSpeed = 7f;
@@ -59,6 +59,21 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //do not update if game is paused
+        //if (GameManager.Instance.isPaused)
+        //    return;
+
+        //Pause Menu
+        if (Input.GetButtonDown("Cancel") && !GameManager.Instance.isPaused) {
+            GameManager.Instance.pauseGame();
+        }
+        else if (Input.GetButtonDown("Cancel") && GameManager.Instance.isPaused) {
+            GameManager.Instance.unPauseGame();
+
+        }
+
+
+
         checkWall();
 
         if (lastWall != null) {
@@ -572,6 +587,5 @@ public class PlayerMovement : MonoBehaviour
     {
         this.isBouncing = set;
     }
-
 }
 

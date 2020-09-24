@@ -8,8 +8,15 @@ public class MainMenuScript : MonoBehaviour
     //Canvas for select level screen
     public GameObject selectLevelPrefab;
     //Canvas that the Button Select game object is a child of
-    public GameObject parentCanvas;
+    private GameObject parentCanvas;
 
+    private void Start() {
+        parentCanvas = transform.root.gameObject;
+
+        //unlock cursor in case we loaded from game scene
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
     public void buttonAction(GameObject buttonPressed) {
         switch (buttonPressed.name) {
             case "Play Button":
@@ -17,6 +24,11 @@ public class MainMenuScript : MonoBehaviour
                 break;
             case "Level Select Button":
                 Instantiate(selectLevelPrefab);
+                //set the canvas that the 'back' button will load back to
+                selectLevelPrefab.GetComponentInChildren<LevelSelectScript>().PreviousCanvas = 
+                    (GameObject)Resources.Load("Menu Canvas Prefabs/Main Menu Canvas");
+                print(selectLevelPrefab.GetComponentInChildren<LevelSelectScript>().PreviousCanvas.name);
+
                 Destroy(parentCanvas);
                 break;
             case "Quit Game Button":
