@@ -460,7 +460,7 @@ PrefabInstance:
         type: 3}
       propertyPath: gunEnd
       value: 
-      objectReference: {fileID: 227560266}
+      objectReference: {fileID: 2806832458224595592}
     - target: {fileID: 5948605261707022728, guid: 7128d634484cd8d40a39c4ccb2715916,
         type: 3}
       propertyPath: m_Name
@@ -526,6 +526,12 @@ PrefabInstance:
 --- !u!4 &6907207730206942835 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6468963860729645874, guid: 7128d634484cd8d40a39c4ccb2715916,
+    type: 3}
+  m_PrefabInstance: {fileID: 440566126723755329}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2806832458224595592 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2373093200118357961, guid: 7128d634484cd8d40a39c4ccb2715916,
     type: 3}
   m_PrefabInstance: {fileID: 440566126723755329}
   m_PrefabAsset: {fileID: 0}
