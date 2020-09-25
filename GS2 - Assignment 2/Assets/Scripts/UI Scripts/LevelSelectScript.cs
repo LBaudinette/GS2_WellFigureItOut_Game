@@ -5,13 +5,13 @@ using UnityEngine;
 public class LevelSelectScript : MonoBehaviour
 {
     //Canvas for the main menu screen
-    public GameObject mainMenuPrefab;
+    //public GameObject mainMenuPrefab;
     private GameObject pauseMenuPrefab;
     
     private GameObject parentCanvas;
     private string levelSelected;
 
-    public GameObject previousCanvas;
+    private GameObject previousCanvas;
     public GameObject PreviousCanvas {
         get { return previousCanvas; }
         set { previousCanvas = value; }
@@ -19,7 +19,8 @@ public class LevelSelectScript : MonoBehaviour
 
     private void Start() {
         parentCanvas = transform.root.gameObject;
-        print(previousCanvas.name);
+        print("GAME OBJECT: " + gameObject.name);
+        print(transform.root.name);
     }
     private void Update() {
        
@@ -32,6 +33,8 @@ public class LevelSelectScript : MonoBehaviour
                 Destroy(parentCanvas);
                 break;
             case "Continue Button":
+                if(GameManager.Instance.isPaused)
+                    GameManager.Instance.unPauseGame();
                 SimpleSceneFader.ChangeSceneWithFade(levelSelected);
                 break;
             case "Level 1 Button":

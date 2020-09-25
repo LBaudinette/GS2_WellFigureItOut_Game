@@ -22,15 +22,17 @@ public class PauseScript : MonoBehaviour
             case "Resume Button":
                 GameManager.Instance.unPauseGame();
 
-                //Destroy(parentCanvas);
+                Destroy(parentCanvas);
                 break;
             case "Retry Button":
+                GameManager.Instance.unPauseGame();
                 //Reload scene 
+                print(PlayerPrefs.GetString("SceneToLoad"));
                 SimpleSceneFader.ChangeSceneWithFade(SceneManager.GetActiveScene().name);
                 break;
             case "Level Select Button":
                 Instantiate(selectLevelPrefab);
-                selectLevelPrefab.GetComponentInChildren<LevelSelectScript>().PreviousCanvas 
+                GameObject.Find("Level Select Canvas(Clone)/Button Selector").GetComponent<LevelSelectScript>().PreviousCanvas
                     = (GameObject)Resources.Load("Menu Canvas Prefabs/Pause Canvas");
                 Destroy(parentCanvas);
                 break;
