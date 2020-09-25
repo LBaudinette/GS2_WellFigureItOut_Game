@@ -55,17 +55,19 @@ public class GunScript : MonoBehaviour {
     }
 
     private void FixedUpdate() {
-        rotationalRecoil = Vector3.Lerp(rotationalRecoil, Vector3.zero, rotationRecoverSpeed * Time.deltaTime);
-        positionalRecoil = Vector3.Lerp(positionalRecoil, Vector3.zero, positionRecoverSpeed * Time.deltaTime);
+        //rotationalRecoil = Vector3.Lerp(rotationalRecoil, Vector3.zero, rotationRecoverSpeed * Time.deltaTime);
+        //positionalRecoil = Vector3.Lerp(positionalRecoil, Vector3.zero, positionRecoverSpeed * Time.deltaTime);
 
-        transform.localPosition = Vector3.Slerp(transform.localPosition, positionalRecoil, positionRecoilSpeed * Time.fixedDeltaTime);
-        targetRecoilRotation = Vector3.Slerp(targetRecoilRotation, rotationalRecoil, rotationRecoilSpeed * Time.fixedDeltaTime);
-        transform.localRotation = Quaternion.Euler(targetRecoilRotation);
+        //transform.localPosition = Vector3.Slerp(transform.localPosition, positionalRecoil, positionRecoilSpeed * Time.fixedDeltaTime);
+        //targetRecoilRotation = Vector3.Slerp(targetRecoilRotation, rotationalRecoil, rotationRecoilSpeed * Time.fixedDeltaTime);
+        //transform.localRotation = Quaternion.Euler(targetRecoilRotation);
+
+        lookSway();
+        movementSway();
     }
 
     private void LateUpdate() {
-        lookSway();
-        movementSway();
+        
     }
 
     void shoot() {
@@ -104,7 +106,7 @@ public class GunScript : MonoBehaviour {
 
         }
 
-        recoil();
+        //recoil();
     }
     void createLaser(Vector3 endPoint) {
         laser.enabled = true;
