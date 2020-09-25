@@ -102,7 +102,7 @@ public class GunScript : MonoBehaviour {
             createLaser(hit.point);
         } 
         else { //if the player didn't hit anything, then only draw a laser to a certain distance
-            createLaser(ray.direction * weaponRange);
+            createLaser(ray.origin + (camera.transform.forward * weaponRange));
 
         }
 

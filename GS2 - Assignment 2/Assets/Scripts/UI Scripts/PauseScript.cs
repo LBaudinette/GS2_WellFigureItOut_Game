@@ -37,6 +37,7 @@ public class PauseScript : MonoBehaviour
             case "Main Menu Button":
                 //Instantiate(mainMenuPrefab);
                 //Destroy(parentCanvas);
+                GameManager.Instance.unPauseGame();
                 SimpleSceneFader.ChangeSceneWithFade("MainMenu");
                 break;
             case "Quit Game Button":
