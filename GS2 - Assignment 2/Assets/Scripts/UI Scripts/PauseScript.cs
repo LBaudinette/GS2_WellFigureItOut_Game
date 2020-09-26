@@ -27,8 +27,7 @@ public class PauseScript : MonoBehaviour
             case "Retry Button":
                 GameManager.Instance.unPauseGame();
                 //Reload scene 
-                string SceneToLoad = "Level 1";
-                Initiate.Fade(SceneManager.GetActiveScene().name, Color.black, 1.0f);
+                Initiate.Fade(SceneManager.GetActiveScene().name, Color.black, 1f);
                 break;
             case "Level Select Button":
                 Instantiate(selectLevelPrefab);
@@ -40,7 +39,7 @@ public class PauseScript : MonoBehaviour
                 //Instantiate(mainMenuPrefab);
                 //Destroy(parentCanvas);
                 GameManager.Instance.unPauseGame();
-                Initiate.Fade("MainMenu", Color.black, 1.0f);
+                Initiate.Fade("MainMenu", Color.black, 1f);
 
                 break;
             case "Quit Game Button":

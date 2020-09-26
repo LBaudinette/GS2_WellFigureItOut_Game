@@ -21,6 +21,7 @@ public class MainMenuScript : MonoBehaviour
         switch (buttonPressed.name) {
             case "Play Button":
                 Initiate.Fade("Level 1", Color.black, 1.0f);
+
                 break;
             case "Level Select Button":
                 Instantiate(selectLevelPrefab);

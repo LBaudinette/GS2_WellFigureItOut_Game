@@ -18,6 +18,7 @@ public static class Initiate
         init.name = "Fader";
         Canvas myCanvas = init.AddComponent<Canvas>();
         myCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        myCanvas.sortingOrder = 100;
         init.AddComponent<Fader>();
         init.AddComponent<CanvasGroup>();
         init.AddComponent<Image>();
