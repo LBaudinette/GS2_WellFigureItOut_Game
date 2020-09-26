@@ -35,7 +35,7 @@ public class LevelSelectScript : MonoBehaviour
             case "Continue Button":
                 if(GameManager.Instance.isPaused)
                     GameManager.Instance.unPauseGame();
-                SimpleSceneFader.ChangeSceneWithFade(levelSelected);
+                Initiate.Fade(levelSelected, Color.black, 1.0f);
                 break;
             case "Level 1 Button":
                 levelSelected = "Level 1";

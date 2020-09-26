@@ -48,10 +48,15 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
     public void unPauseGame() {
-        Destroy(pauseCanvasClone);
+        //Destroy any menu canvases that are open
+        Destroy(GameObject.Find("Level Select Canvas(Clone)"));
+        Destroy(GameObject.Find("Pause Canvas(Clone)"));
+
         isPaused = false;
         Time.timeScale = 1;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
+    
+
 }
