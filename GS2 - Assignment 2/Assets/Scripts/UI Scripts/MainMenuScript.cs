@@ -20,15 +20,14 @@ public class MainMenuScript : MonoBehaviour
     public void buttonAction(GameObject buttonPressed) {
         switch (buttonPressed.name) {
             case "Play Button":
-                SimpleSceneFader.ChangeSceneWithFade("Level 1");
+                Initiate.Fade("Level 1", Color.black, 1.0f);
+
                 break;
             case "Level Select Button":
                 Instantiate(selectLevelPrefab);
                 //set the canvas that the 'back' button will load back to
-                selectLevelPrefab.GetComponentInChildren<LevelSelectScript>().PreviousCanvas = 
-                    (GameObject)Resources.Load("Menu Canvas Prefabs/Main Menu Canvas");
-                print(selectLevelPrefab.GetComponentInChildren<LevelSelectScript>().PreviousCanvas.name);
-
+                GameObject.Find("Level Select Canvas(Clone)/Button Selector").GetComponent<LevelSelectScript>().PreviousCanvas
+                    = (GameObject)Resources.Load("Menu Canvas Prefabs/Main Menu Canvas"); 
                 Destroy(parentCanvas);
                 break;
             case "Quit Game Button":

@@ -82,7 +82,7 @@ public class GunScript : MonoBehaviour {
         //Handle the raycast hit
         RaycastHit hit;
         if(Physics.Raycast(ray, out hit)) {
-            //print(hit.collider.gameObject.name);
+            print(hit.collider.gameObject.name);
             switch (hit.collider.tag) {
                 case "Enemy":
                     Destroy(hit.collider.gameObject);
