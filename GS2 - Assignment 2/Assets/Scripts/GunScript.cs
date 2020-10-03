@@ -90,6 +90,9 @@ public class GunScript : MonoBehaviour {
                 case "Switch":
                     hit.collider.gameObject.GetComponent<SwitchScript>().enable();
                     break;
+                case "MoveableObjSwitch":
+                    hit.collider.gameObject.GetComponent<MoveableObjSwitch>().enable();
+                    break;
                 case "BouncePad":
                     BouncePad pad = hit.collider.gameObject.GetComponent<BouncePad>();
                     if (!pad.padEnabled)

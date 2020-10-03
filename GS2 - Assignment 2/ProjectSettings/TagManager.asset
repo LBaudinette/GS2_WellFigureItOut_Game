@@ -11,6 +11,7 @@ TagManager:
   - DeathPlane
   - SceneFader
   - Gun
+  - MoveableObjSwitch
   layers:
   - Default
   - TransparentFX

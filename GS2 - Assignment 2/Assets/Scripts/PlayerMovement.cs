@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private int jumpCounter = 2;
     private float walkSpeed = 7f;
     private float sprintSpeed = 10f;
+    private float airAccel = 5f;
 
     private float crouchSpeed = 3f;
     private float crouchHeight = 1.25f;
@@ -36,12 +37,10 @@ public class PlayerMovement : MonoBehaviour
     private float slideSpeed = 15f;
     private float slideTime = 1.5f;
     private float slideHorizontalMoveMult = 0.25f;
-    private Vector3 slideForward;
+    private float slideFriction = 0.3f;
+    private float speedDecayRate = 5f;
+    private RaycastHit currSlope;
     private Coroutine slideRoutine = null;
-
-    private bool isBouncing;
-    private float bounceSpeed;
-    private Vector3 bounceDir;
 
 
     Vector3 velocity; // Used for gravity
@@ -96,11 +95,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (isGrounded || isOnSlope)
         {
-            if (isBouncing)
-            {
-                bounceSpeed = 0f;
-                isBouncing = false;
-            }
 
             resetJumps();
 
@@ -129,14 +123,29 @@ public class PlayerMovement : MonoBehaviour
             {
                 exitSprint();
             }
+            
+            bool overSprintSpeed = this.speed > sprintSpeed;
+            if (isSprinting && overSprintSpeed)
+            {
+                // if over sprint speed and sprinting and grounded, decay speed over time
+                if (speed - speedDecayRate * Time.deltaTime < sprintSpeed)
+                {
+                    speed = sprintSpeed;
+                }
+                else if (!isOnSlope)
+                {
+                    speed -= speedDecayRate * Time.deltaTime;
+                }
+            }
 
             // if sprinting, above speed threshold, or on slope, do slide, otherwise crouch
-            if (isSprinting || this.speed >= sprintSpeed)
+            if (isSprinting || overSprintSpeed)
             {
                 if (Input.GetButtonDown("Crouch"))
                 {
                     enterSlide();
                 }
+
             } else 
             {
                 // crouching inputs
@@ -158,6 +167,14 @@ public class PlayerMovement : MonoBehaviour
                     UnityEngine.Debug.Log("Conditions met to exit slide");
                     exitSlide();
                 }
+
+                if (isOnSlope)
+                {
+                    float speedX = (1f - currSlope.normal.y) * currSlope.normal.x * (1f - slideFriction);
+                    float speedZ = (1f - currSlope.normal.y) * currSlope.normal.z * (1f - slideFriction);
+                    speed += (speedZ + speedX) * 250f * Time.deltaTime;
+                    charController.Move(currSlope.point - charController.transform.position);
+                }
             }
         } else if (!isGrounded && !isOnSlope)
         {
@@ -173,11 +190,21 @@ public class PlayerMovement : MonoBehaviour
             // accelerate player in midair if they are moving forward
             if (speed < sprintSpeed && Input.GetAxisRaw("Vertical") > 0)
             {
-                speed += 0.01f;
+                speed += airAccel * Time.deltaTime;
                 if (speed >= sprintSpeed)
                 {
                     speed = sprintSpeed;
                     isSprinting = true;
+                }
+            }
+            if (speed > sprintSpeed)
+            {
+                if (Input.GetAxisRaw("Vertical") > 0)
+                {
+                    speed -= 1 / (speed - sprintSpeed) * Time.deltaTime;
+                } else if (Input.GetAxisRaw("Vertical") == 0)
+                {
+                    speed -= (speed - sprintSpeed) * Time.deltaTime;
                 }
             }
         }
@@ -200,7 +227,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 isJumping = true;
                 //StartCoroutine(rotateCameraLeft());
-                isBouncing = false;
                 //UnityEngine.Debug.Log("jumping");
                 velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
                 if (inMidairCanJump)
@@ -222,17 +248,7 @@ public class PlayerMovement : MonoBehaviour
             charController.Move(Vector3.down * slopeForce * Time.deltaTime);
         }
 
-        //UnityEngine.Debug.Log("Speed = " + this.speed);
-
-        if (isBouncing)
-        {
-            charController.Move(bounceDir * bounceSpeed * Time.deltaTime);
-            bounceSpeed -= bounceSpeed * Time.deltaTime;
-            if (bounceSpeed <= 0)
-            {
-                isBouncing = false;
-            }
-        }
+        UnityEngine.Debug.Log("Speed = " + this.speed);
 
         move();
 
@@ -320,7 +336,6 @@ public class PlayerMovement : MonoBehaviour
     {
         currentWall = wall.collider.gameObject.GetInstanceID();
         isWallRunning = true;
-        isBouncing = false;
 
     }
     void exitWallRun()
@@ -394,6 +409,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (hit.normal != Vector3.up)
             {
+                currSlope = hit;
                 return true;
             }
         }
@@ -431,7 +447,10 @@ public class PlayerMovement : MonoBehaviour
     {
         isSprinting = true;
         playerLook.sprint(isSprinting);
-        this.speed = sprintSpeed;
+        if (speed < sprintSpeed)
+        {
+            this.speed = sprintSpeed;
+        }
     }
 
     private void exitSprint()
@@ -500,24 +519,33 @@ public class PlayerMovement : MonoBehaviour
             {
                 playerLook.sprint(isSprinting);
                 charController.height = standingHeight;
-                this.speed = sprintSpeed;
+                if (speed < sprintSpeed)
+                {
+                    this.speed = sprintSpeed;
+                }
             }
         }
     }
 
     private IEnumerator slideLerp()
     {
-        float elapsedTime = 0;
+        float elapsedTime = 0f;
         // set change based on whether player is crouching
         while (elapsedTime < slideTime)
         {
-            this.speed = Mathf.Lerp(slideSpeed, 0.0f, elapsedTime / slideTime);
-            if (this.speed < crouchSpeed)
+            if (!isOnSlope && isGrounded)
             {
-                this.speed = crouchSpeed;
-                break;
+                this.speed = Mathf.Lerp(slideSpeed, 0.0f, elapsedTime / slideTime);
+                if (this.speed < crouchSpeed)
+                {
+                    this.speed = crouchSpeed;
+                    break;
+                }
+                elapsedTime += Time.deltaTime;
+            } else
+            {
+                elapsedTime = 0f;
             }
-            elapsedTime += Time.deltaTime;
             yield return null;
         }
 
@@ -538,8 +566,19 @@ public class PlayerMovement : MonoBehaviour
             {
                 resetGravity();
                 resetJumps();
+                charController.height = standingHeight;
                 Vector3 padRotation = hit.gameObject.transform.eulerAngles;
-                applyForce(Quaternion.Euler(padRotation.x, padRotation.y, padRotation.z) * pad.forceDir, pad.forceSpeed);
+                StartCoroutine(applyForce(pad.forceSpeed, Quaternion.Euler(padRotation.x, padRotation.y, padRotation.z) * pad.forceDir));
+            }
+        }
+
+        if (isGrounded || isWallRunning)
+        {
+            MoveableObj moveableObj = hit.gameObject.GetComponent<MoveableObj>();
+            if (moveableObj != null && moveableObj.getFinishedMove())
+            {
+                speed += moveableObj.getLastMove().magnitude;
+
             }
         }
     }
@@ -551,14 +590,6 @@ public class PlayerMovement : MonoBehaviour
         {
             respawn();
         }
-    }
-
-    private void applyForce(Vector3 dir, float forceSpeed)
-    {
-        isBouncing = true;
-        isGrounded = false;
-        bounceSpeed = forceSpeed;
-        bounceDir = dir;
     }
 
     public void resetGravity()
@@ -580,9 +611,16 @@ public class PlayerMovement : MonoBehaviour
         speed = walkSpeed;
     }
 
-    private void setBouncing(bool set)
+    private IEnumerator applyForce(float force, Vector3 direction)
     {
-        this.isBouncing = set;
+        float appliedForce = force;
+        while (appliedForce > 0 && !isGrounded && !isOnSlope && !isWallRunning)
+        {
+            UnityEngine.Debug.Log("force = " + appliedForce);
+            charController.Move(direction * appliedForce * Time.deltaTime);
+            appliedForce -= appliedForce * Time.deltaTime;
+            yield return null;
+        }
     }
 }
 
