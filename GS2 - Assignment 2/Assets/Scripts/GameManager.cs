@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public bool isPaused;
     private static GameManager instance = null;
     private GameObject pauseCanvas;
     private GameObject pauseCanvasClone;
-    public bool isPaused;
+    private float timer;
 
     public static GameManager Instance {
         get {
@@ -25,7 +27,8 @@ public class GameManager : MonoBehaviour
 
     void Awake() {
         DontDestroyOnLoad(gameObject);
-        pauseCanvas = (GameObject)Resources.Load("Menu Canvas Prefabs/Pause Canvas");
+        pauseCanvas = (GameObject)Resources.Load("UI/Pause Canvas");
+        isPaused = false;
     }
     // Start is called before the first frame update
     void Start()
@@ -57,6 +60,22 @@ public class GameManager : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
+
+    public void finishTime(float time) {
+        string currentScene = SceneManager.GetActiveScene().name;
+        float savedTime =
+             PlayerPrefs.GetFloat(currentScene, -1f);
+        if(savedTime != -1f) {
+            if (time < savedTime)
+                PlayerPrefs.SetFloat(currentScene, time);
+        }
+        else {
+            PlayerPrefs.SetFloat(currentScene, time);
+        }
+    }
     
+    public void saveToFile(string tag, float value) {
+
+    }
 
 }

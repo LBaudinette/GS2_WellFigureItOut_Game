@@ -27,7 +27,7 @@ public class MainMenuScript : MonoBehaviour
                 Instantiate(selectLevelPrefab);
                 //set the canvas that the 'back' button will load back to
                 GameObject.Find("Level Select Canvas(Clone)/Button Selector").GetComponent<LevelSelectScript>().PreviousCanvas
-                    = (GameObject)Resources.Load("Menu Canvas Prefabs/Main Menu Canvas"); 
+                    = (GameObject)Resources.Load("UI/Main Menu Canvas"); 
                 Destroy(parentCanvas);
                 break;
             case "Quit Game Button":

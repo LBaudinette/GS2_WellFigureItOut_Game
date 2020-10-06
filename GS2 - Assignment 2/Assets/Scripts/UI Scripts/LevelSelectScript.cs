@@ -1,17 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelSelectScript : MonoBehaviour
 {
-    //Canvas for the main menu screen
-    //public GameObject mainMenuPrefab;
-    private GameObject pauseMenuPrefab;
+    public Text levelText;
+    public Text totalEnemiesText;
+    public Text bestTimeText;
     
     private GameObject parentCanvas;
     private string levelSelected;
-
     private GameObject previousCanvas;
+
     public GameObject PreviousCanvas {
         get { return previousCanvas; }
         set { previousCanvas = value; }
@@ -54,5 +55,18 @@ public class LevelSelectScript : MonoBehaviour
                 break;
 
         }
+        displayStats();
+    }
+     
+    private void displayStats() {
+        float bestTime = PlayerPrefs.GetFloat(levelSelected, -1f);
+
+        levelText.text = levelSelected;
+        if (bestTime != -1f)
+            bestTimeText.text = "Best Time: " + bestTime.ToString();
+        else
+            bestTimeText.text = "Not Yet Completed";
+
+
     }
 }

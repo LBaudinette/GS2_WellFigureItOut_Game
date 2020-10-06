@@ -54,6 +54,9 @@ public class PlayerMovement : MonoBehaviour
         charController = GetComponent<CharacterController>();
         playerLook = GetComponent<PlayerLook>();
         respawn();
+        if(GameObject.Find("Level Timer") == null){
+            Instantiate(Resources.Load("UI/Level Timer"));
+        }
     }
 
     // Update is called once per frame
