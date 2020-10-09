@@ -12,20 +12,20 @@ public class TimerScript : MonoBehaviour
     {
         timer = 0f;
         text = GetComponent<Text>();
+
+        //Reset timer when new level is loaded
+        GameManager.Instance.timer = 0f;
+        GameManager.Instance.isTiming = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!GameManager.Instance.isPaused) {
+        timer = GameManager.Instance.timer;
+        string minutes = ((int)timer / 60).ToString();
+        string seconds = (timer % 60).ToString("f1");
 
-            timer += Time.deltaTime;
-
-            string minutes = ((int)timer / 60).ToString();
-            string seconds = (timer % 60).ToString("f1");
-
-            text.text = minutes + ":" + seconds;
-        }
+        text.text = minutes + ":" + seconds;        
 
     }
 }

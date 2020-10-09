@@ -5,11 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public bool isPaused;
+    public bool isPaused, isTiming;
+    public float timer;
     private static GameManager instance = null;
     private GameObject pauseCanvas;
     private GameObject pauseCanvasClone;
-    private float timer;
+    
 
     public static GameManager Instance {
         get {
@@ -39,7 +40,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        updateTimer();
     }
 
     public void pauseGame() {
@@ -61,21 +62,28 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    public void finishTime(float time) {
+    public void finishTime() {
+        isTiming = false;
+
         string currentScene = SceneManager.GetActiveScene().name;
         float savedTime =
              PlayerPrefs.GetFloat(currentScene, -1f);
         if(savedTime != -1f) {
-            if (time < savedTime)
-                PlayerPrefs.SetFloat(currentScene, time);
+            if (timer < savedTime)
+                PlayerPrefs.SetFloat(currentScene, timer);
         }
         else {
-            PlayerPrefs.SetFloat(currentScene, time);
+            PlayerPrefs.SetFloat(currentScene, timer);
         }
     }
-    
+
     public void saveToFile(string tag, float value) {
 
+    }
+
+    private void updateTimer() {
+        if (!isPaused && isTiming) 
+            timer += Time.deltaTime;
     }
 
 }

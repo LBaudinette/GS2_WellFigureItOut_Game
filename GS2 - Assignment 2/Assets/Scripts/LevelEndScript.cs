@@ -35,6 +35,9 @@ public class LevelEndScript : MonoBehaviour
     {
         if (enabled)
         {
+            //TODO: Instantiate a level end screen
+            GameManager.Instance.finishTime();
+
             string sceneName = SceneManager.GetActiveScene().name;
             if (sceneName.Equals("Level 1")) {
                 SceneManager.UnloadSceneAsync("Level 1");
@@ -60,5 +63,9 @@ public class LevelEndScript : MonoBehaviour
                 SceneManager.LoadScene("MainMenu");
             }
         }
+    }
+
+    private float checkHighScore() {
+        return 0f;
     }
 }
