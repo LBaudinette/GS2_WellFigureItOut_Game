@@ -27,7 +27,7 @@ public class PlayerLook : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        if (GameManager.Instance.isPaused)
+        if (GameManager.Instance.isPaused || GameManager.Instance.levelFinished)
             return;
 
 

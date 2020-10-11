@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public bool isPaused, isTiming;
+    public bool isPaused, isTiming, levelFinished;
     public float timer;
     private static GameManager instance = null;
     private GameObject pauseCanvas;
@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         pauseCanvas = (GameObject)Resources.Load("UI/Pause Canvas");
         isPaused = false;
+        levelFinished = false;
     }
     // Start is called before the first frame update
     void Start()
@@ -42,14 +43,16 @@ public class GameManager : MonoBehaviour
     {
         updateTimer();
     }
-
-    public void pauseGame() {
-        pauseCanvasClone = Instantiate(pauseCanvas);
+    //isPausedMenu is true if we are pausing the game through the pause menu
+    public void pauseGame(bool isPausedMenu) {
+        
         isPaused = true;
+        isTiming = false;
         Time.timeScale = 0;
 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        pauseCanvasClone = Instantiate(pauseCanvas);
     }
     public void unPauseGame() {
         //Destroy any menu canvases that are open
@@ -57,6 +60,8 @@ public class GameManager : MonoBehaviour
         Destroy(GameObject.Find("Pause Canvas(Clone)"));
 
         isPaused = false;
+        if(!levelFinished)
+            isTiming = true;
         Time.timeScale = 1;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -64,6 +69,11 @@ public class GameManager : MonoBehaviour
 
     public void finishTime() {
         isTiming = false;
+        levelFinished = true;
+        //pauseGame(false);
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
         string currentScene = SceneManager.GetActiveScene().name;
         float savedTime =
@@ -75,10 +85,9 @@ public class GameManager : MonoBehaviour
         else {
             PlayerPrefs.SetFloat(currentScene, timer);
         }
-    }
 
-    public void saveToFile(string tag, float value) {
-
+        //Instantiate the Level End Screen
+        Instantiate((GameObject)Resources.Load("UI/Level End Canvas"));
     }
 
     private void updateTimer() {

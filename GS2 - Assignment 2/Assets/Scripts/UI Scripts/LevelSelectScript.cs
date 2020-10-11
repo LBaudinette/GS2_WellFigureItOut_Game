@@ -63,7 +63,7 @@ public class LevelSelectScript : MonoBehaviour
 
         levelText.text = levelSelected;
         if (bestTime != -1f)
-            bestTimeText.text = "Best Time: " + bestTime.ToString();
+            bestTimeText.text = "Best Time: " + bestTime.ToString("f1");
         else
             bestTimeText.text = "Not Yet Completed";
 

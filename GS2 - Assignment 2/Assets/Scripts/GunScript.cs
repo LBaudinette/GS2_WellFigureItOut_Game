@@ -43,7 +43,8 @@ public class GunScript : MonoBehaviour {
     }
 
     void Update() {
-        
+        if (GameManager.Instance.isPaused || GameManager.Instance.levelFinished)
+            return;
         
         if (Input.GetButtonDown("Fire1") && Time.time > nextShoot) {
             /*add the rate of fire to the current time to find what time the

@@ -68,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
 
         //Pause Menu
         if (Input.GetButtonDown("Cancel") && !GameManager.Instance.isPaused) {
-            GameManager.Instance.pauseGame();
+            GameManager.Instance.pauseGame(true);
         }
         else if (Input.GetButtonDown("Cancel") && GameManager.Instance.isPaused) {
             GameManager.Instance.unPauseGame();
