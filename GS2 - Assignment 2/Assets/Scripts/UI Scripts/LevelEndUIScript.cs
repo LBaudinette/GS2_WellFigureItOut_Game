@@ -35,6 +35,9 @@ public class LevelEndUIScript : MonoBehaviour
                 Initiate.Fade("MainMenu", Color.black, 1f);
                 break;
         }
+
+        GameManager.Instance.resetStats();
+
     }
     
     private void setText() {

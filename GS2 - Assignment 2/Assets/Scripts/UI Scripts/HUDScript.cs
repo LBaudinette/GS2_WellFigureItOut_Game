@@ -7,15 +7,17 @@ public class HUDScript : MonoBehaviour
 {
     public Text timerText;
     public GameObject jumpCounter;
+    public Text enemyCounterText;
     private float timer;
+    private int maxEnemies;
 
     // Start is called before the first frame update
     void Start()
     {
         timer = 0f;
         //Reset timer when new level is loaded
-        GameManager.Instance.timer = 0f;
         GameManager.Instance.isTiming = true;
+        setEnemyCount();
 
     }
 
@@ -27,6 +29,7 @@ public class HUDScript : MonoBehaviour
             Destroy(gameObject);
 
         setJumpCounters();
+        updateEnemyCount();
         timer = GameManager.Instance.timer;
         string minutes = ((int)timer / 60).ToString();
         string seconds = (timer % 60).ToString("f1");
@@ -51,6 +54,18 @@ public class HUDScript : MonoBehaviour
             jumpCounter.SetActive(false);
         else
             jumpCounter.SetActive(true);
+    }
+    private void setEnemyCount() {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        maxEnemies = enemies.Length;
+        print(maxEnemies);
+        enemyCounterText.text = GameManager.Instance.enemiesDefeated.ToString() +
+            "/" + maxEnemies.ToString();
+    }
+
+    private void updateEnemyCount() {
+        enemyCounterText.text = GameManager.Instance.enemiesDefeated.ToString() +
+            "/" + maxEnemies.ToString();
     }
 
 }

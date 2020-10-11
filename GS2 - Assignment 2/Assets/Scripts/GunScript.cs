@@ -88,6 +88,7 @@ public class GunScript : MonoBehaviour {
             switch (hit.collider.tag) {
                 case "Enemy":
                     Destroy(hit.collider.gameObject);
+                    GameManager.Instance.enemiesDefeated++;
                     break;
                 case "Switch":
                     hit.collider.gameObject.GetComponent<SwitchScript>().enable();

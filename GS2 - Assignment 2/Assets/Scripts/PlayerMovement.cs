@@ -321,7 +321,6 @@ public class PlayerMovement : MonoBehaviour
 
     void enterWallRun(RaycastHit wall)
     {
-        resetJumps();
         currentWall = wall.collider.gameObject.GetInstanceID();
         isWallRunning = true;
         isBouncing = false;
@@ -329,7 +328,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void exitWallRun()
     {
-        
+        resetJumps();
         isWallRunning = false;
         lastWall = currentWall;
         currentWall = null;

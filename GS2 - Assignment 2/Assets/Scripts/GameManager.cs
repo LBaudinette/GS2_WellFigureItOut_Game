@@ -6,7 +6,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public bool isPaused, isTiming, levelFinished;
-    public float timer;
+    public float timer = 0f;
+    public int enemiesDefeated;
     private static GameManager instance = null;
     private GameObject pauseCanvas;
     private GameObject pauseCanvasClone;
@@ -88,6 +89,11 @@ public class GameManager : MonoBehaviour
 
         //Instantiate the Level End Screen
         Instantiate((GameObject)Resources.Load("UI/Level End Canvas"));
+    }
+
+    public void resetStats() {
+        timer = 0f;
+        enemiesDefeated = 0;
     }
 
     private void updateTimer() {
