@@ -11,6 +11,7 @@ TagManager:
   - DeathPlane
   - Gun
   - SceneFader
+  - HUD
   layers:
   - Default
   - TransparentFX

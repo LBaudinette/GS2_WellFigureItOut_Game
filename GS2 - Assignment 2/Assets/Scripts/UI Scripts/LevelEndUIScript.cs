@@ -21,16 +21,17 @@ public class LevelEndUIScript : MonoBehaviour
         
         switch (buttonPressed.name) {
             case "Retry Button":
-                GameManager.Instance.levelFinished = false;
                 Initiate.Fade(SceneManager.GetActiveScene().name, Color.black, 1f);
                 break;
             case "Next Level Button":
                 int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
-                string nextSceneName = SceneManager.GetSceneAt(nextSceneIndex).name;
-                Initiate.Fade(nextSceneName, Color.black, 1f);
+                //print("NEXT SCENE INDEXX: " + nextSceneIndex);
+
+                //string nextSceneName = SceneManager.GetSceneByBuildIndex(nextSceneIndex);
+                string nextLevelName = "Level " + (SceneManager.GetActiveScene().buildIndex + 1);
+                Initiate.Fade(nextLevelName, Color.black, 1f);
                 break;
             case "Main Menu Button":
-                GameManager.Instance.levelFinished = false;
                 Initiate.Fade("MainMenu", Color.black, 1f);
                 break;
         }

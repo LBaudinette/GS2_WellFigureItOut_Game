@@ -78,6 +78,7 @@ public class Fader : MonoBehaviour
                 if (alpha == 1 && !startedLoading)
                 {
                     startedLoading = true;
+                    GameManager.Instance.levelFinished = false;
                     SceneManager.LoadScene(fadeScene);
                 }
 
@@ -101,7 +102,6 @@ public class Fader : MonoBehaviour
         Initiate.DoneFading();
 
         Debug.Log("Your scene has been loaded , and fading in has just ended");
-
         Destroy(gameObject);
 
         yield return null;

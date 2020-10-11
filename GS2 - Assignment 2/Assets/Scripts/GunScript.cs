@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class GunScript : MonoBehaviour {
     public float force, smooth;                 //the intensity of weapon look sway and smoothing for LERP
-    public float idleCounter, movementCounter;
     public Camera camera;
     public Transform gunEnd;                    //transform for the gun end found as a child of the gun object
-    public Texture2D crosshair;                 //texture for the crosshair that this script draws
     private Quaternion originalRotation;        //the original rotation for the gun
     private PlayerMovement playerMovement;      //reference to the player movement script to check for movement states 
     private Vector3 targetPosition;             //used for weapon sway to lerp to target position
-    private LineRenderer laser;      
-    
+    private LineRenderer laser;
+
+    private float idleCounter, movementCounter;
     private float nextShoot;                    //the time for when the player can shoot again
     private float rateOfFire = 0.5f;              //the delay between when the player can shoot multiple times
     private float weaponRange = 50.0f;          //range of the weapon if nothing is hit
@@ -56,6 +55,8 @@ public class GunScript : MonoBehaviour {
     }
 
     private void FixedUpdate() {
+        if (GameManager.Instance.isPaused || GameManager.Instance.levelFinished)
+            return;
         //rotationalRecoil = Vector3.Lerp(rotationalRecoil, Vector3.zero, rotationRecoverSpeed * Time.deltaTime);
         //positionalRecoil = Vector3.Lerp(positionalRecoil, Vector3.zero, positionRecoverSpeed * Time.deltaTime);
 
@@ -147,7 +148,7 @@ public class GunScript : MonoBehaviour {
 
         //Create a x and y rotation for the look sway depending on what way the player looked
         Quaternion tmpX = Quaternion.AngleAxis(-force * mouseX, Vector3.up);
-        Quaternion tmpY = Quaternion.AngleAxis(force * mouseY, Vector3.right);
+        Quaternion tmpY = Quaternion.AngleAxis(-force * mouseY, Vector3.right);
 
         //multiplying Quaternions adds the angles together
         Quaternion targetRotation = originalRotation * tmpX * tmpY;
@@ -186,10 +187,6 @@ public class GunScript : MonoBehaviour {
         }
     }
 
-    private void OnGUI() {
-        GUI.DrawTexture(new Rect((Screen.width / 2) - (crosshair.width / 2), 
-             (Screen.height / 2) - crosshair.height / 2, crosshair.width, crosshair.height), crosshair);
-    }
 
     //Sets target position to lerp to for weapon sway during movement
     private void weaponSway(float x, float xSwayIntensity, float ySwayIntensity) {

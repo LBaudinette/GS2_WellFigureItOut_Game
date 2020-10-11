@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded, isJumping, isCrouching, isSliding,
         isOnSlope, wasGrounded, wasOnSlope, isPaused;
     private float gravity = -9.81f; //default value of gravity in Unity
-    private int jumpCounter = 2;
+    public int jumpCounter = 2;
     private float walkSpeed = 7f;
     private float sprintSpeed = 10f;
 
@@ -54,8 +54,9 @@ public class PlayerMovement : MonoBehaviour
         charController = GetComponent<CharacterController>();
         playerLook = GetComponent<PlayerLook>();
         respawn();
-        if(GameObject.Find("Level Timer") == null){
-            Instantiate(Resources.Load("UI/Level Timer"));
+        if(GameObject.FindWithTag("HUD") == null){
+            print("NEW HUD");
+            Instantiate(Resources.Load("UI/HUD"));
         }
     }
 
@@ -198,7 +199,6 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown("Jump"))
         {
             bool inMidairCanJump = jumpCounter > 0 && !isGrounded;
-
             if (inMidairCanJump || isGrounded)
             {
                 isJumping = true;
@@ -321,6 +321,7 @@ public class PlayerMovement : MonoBehaviour
 
     void enterWallRun(RaycastHit wall)
     {
+        resetJumps();
         currentWall = wall.collider.gameObject.GetInstanceID();
         isWallRunning = true;
         isBouncing = false;
@@ -328,7 +329,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void exitWallRun()
     {
-        resetJumps();
+        
         isWallRunning = false;
         lastWall = currentWall;
         currentWall = null;

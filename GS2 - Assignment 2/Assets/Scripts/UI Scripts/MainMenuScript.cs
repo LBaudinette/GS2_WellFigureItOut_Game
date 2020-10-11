@@ -7,12 +7,15 @@ public class MainMenuScript : MonoBehaviour
 {
     //Canvas for select level screen
     public GameObject selectLevelPrefab;
-    //Canvas that the Button Select game object is a child of
+    public AudioClip hoverSound;
+    public AudioClip clickSound;
+
     private GameObject parentCanvas;
+    private AudioSource audioSource;
 
     private void Start() {
         parentCanvas = transform.root.gameObject;
-
+        audioSource = GetComponent<AudioSource>();
         //unlock cursor in case we loaded from game scene
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -42,5 +45,13 @@ public class MainMenuScript : MonoBehaviour
 
 
         }
+    }
+
+    public void playHoverSound() {
+        audioSource.PlayOneShot(hoverSound);
+    }
+
+    public void playClickSound() {
+        audioSource.PlayOneShot(clickSound);
     }
 }
