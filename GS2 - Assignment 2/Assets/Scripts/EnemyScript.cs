@@ -9,21 +9,41 @@ public class EnemyScript : MonoBehaviour
     private CharacterController charController;
     private float angle;
     private Quaternion currentRotation;
-    private bool isChasing;
+    private bool isChasing, inEnemyZone;
 
     // Start is called before the first frame update
     void Start()
     {
         charController = GetComponent<CharacterController>();
+        inEnemyZone = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+
         if(!isChasing)
             checkForPlayer();
         else
             moveToPlayer();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "enemyZone")
+        {
+            UnityEngine.Debug.Log("entered enemy zone");
+            inEnemyZone = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "enemyZone")
+        {
+            UnityEngine.Debug.Log("left enemy zone");
+            inEnemyZone = false;
+        }
     }
 
     void moveToPlayer() {
@@ -35,8 +55,12 @@ public class EnemyScript : MonoBehaviour
             playerDir = new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z);
         }
         transform.LookAt(player.transform, Vector3.up);
-        float step = speed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, playerDir, step);
+        if (inEnemyZone)
+        {
+            float step = speed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, playerDir, step);
+        }
+        
 
     }
 

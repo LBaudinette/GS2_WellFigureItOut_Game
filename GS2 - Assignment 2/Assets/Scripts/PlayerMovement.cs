@@ -27,6 +27,8 @@ public class PlayerMovement : MonoBehaviour
     private float walkSpeed = 7f;
     private float sprintSpeed = 10f;
     private float airAccel = 5f;
+    private float iTimeMax = 1f;
+    private float iTime = 0f;
 
     private float crouchSpeed = 3f;
     private float crouchHeight = 1.25f;
@@ -71,7 +73,12 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
-
+        // decay invincibility time after being hit if iTime is above 0
+        if (iTime > 0)
+        {
+            iTime -= Time.deltaTime;
+            UnityEngine.Debug.Log("iTime = " + iTime);
+        }
 
         checkWall();
 
@@ -248,7 +255,7 @@ public class PlayerMovement : MonoBehaviour
             charController.Move(Vector3.down * slopeForce * Time.deltaTime);
         }
 
-        UnityEngine.Debug.Log("Speed = " + this.speed);
+        // UnityEngine.Debug.Log("Speed = " + this.speed);
 
         move();
 
@@ -570,6 +577,14 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 padRotation = hit.gameObject.transform.eulerAngles;
                 StartCoroutine(applyForce(pad.forceSpeed, Quaternion.Euler(padRotation.x, padRotation.y, padRotation.z) * pad.forceDir));
             }
+        } else if (hit.gameObject.tag == "Enemy")
+        {
+            if (iTime <= 0)
+            {
+                Vector3 push = (charController.transform.position - hit.point).normalized;
+                iTime = iTimeMax;
+                StartCoroutine(applyForce(15f, push));
+            }
         }
 
         if (isGrounded || isWallRunning)
@@ -585,7 +600,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        UnityEngine.Debug.Log("hit trigger: " + other.gameObject.tag);
+        // UnityEngine.Debug.Log("hit trigger: " + other.gameObject.tag);
         if (other.gameObject.tag == "DeathPlane")
         {
             respawn();
@@ -614,7 +629,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator applyForce(float force, Vector3 direction)
     {
         float appliedForce = force;
-        while (appliedForce > 0 && !isGrounded && !isOnSlope && !isWallRunning)
+        while ((appliedForce > 5f && !isGrounded && !isOnSlope && !isWallRunning && !wasGrounded) || (appliedForce > 5f && (isGrounded || isOnSlope || isWallRunning) && wasGrounded))
         {
             UnityEngine.Debug.Log("force = " + appliedForce);
             charController.Move(direction * appliedForce * Time.deltaTime);

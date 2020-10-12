@@ -12,6 +12,7 @@ TagManager:
   - SceneFader
   - Gun
   - MoveableObjSwitch
+  - enemyZone
   layers:
   - Default
   - TransparentFX
