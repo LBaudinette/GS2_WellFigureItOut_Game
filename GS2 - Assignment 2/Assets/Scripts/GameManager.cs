@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public bool isPaused, isTiming, levelFinished;
     public float timer = 0f;
-    public int enemiesDefeated;
+    public int enemiesDefeated = 0;
     private static GameManager instance = null;
     private GameObject pauseCanvas;
     private GameObject pauseCanvasClone;
@@ -95,10 +95,13 @@ public class GameManager : MonoBehaviour
         timer = 0f;
         enemiesDefeated = 0;
     }
-
+    public void reduceTimer(float amount) {
+        timer -= amount;
+    }
     private void updateTimer() {
         if (!isPaused && isTiming) 
             timer += Time.deltaTime;
     }
 
+    
 }

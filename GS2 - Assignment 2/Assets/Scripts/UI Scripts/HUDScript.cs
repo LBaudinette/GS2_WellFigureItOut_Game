@@ -30,6 +30,7 @@ public class HUDScript : MonoBehaviour
 
         setJumpCounters();
         updateEnemyCount();
+
         timer = GameManager.Instance.timer;
         string minutes = ((int)timer / 60).ToString();
         string seconds = (timer % 60).ToString("f1");
@@ -41,15 +42,7 @@ public class HUDScript : MonoBehaviour
     private void setJumpCounters() {
         int numJumps =
             GameObject.FindWithTag("Player").GetComponent<PlayerMovement>().jumpCounter;
-        //switch (numJumps) {
-        //    case 0:
-
-        //        break;
-        //    case 1:
-        //        break;
-        //    case 2:
-        //        break;
-        //}
+  
         if (numJumps == 0)
             jumpCounter.SetActive(false);
         else
@@ -58,12 +51,12 @@ public class HUDScript : MonoBehaviour
     private void setEnemyCount() {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         maxEnemies = enemies.Length;
-        print(maxEnemies);
         enemyCounterText.text = GameManager.Instance.enemiesDefeated.ToString() +
             "/" + maxEnemies.ToString();
     }
 
     private void updateEnemyCount() {
+
         enemyCounterText.text = GameManager.Instance.enemiesDefeated.ToString() +
             "/" + maxEnemies.ToString();
     }

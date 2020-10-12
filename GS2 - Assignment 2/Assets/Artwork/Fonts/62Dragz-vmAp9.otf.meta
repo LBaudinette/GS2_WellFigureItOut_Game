@@ -1,18 +1,17 @@
 fileFormatVersion: 2
-guid: f4304d953180aca40ba76d8b546df5c4
+guid: 53859b91618691244b253f4240739c62
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
-  fontSize: 200
-  forceTextureCase: -2
+  fontSize: 100
+  forceTextureCase: -1
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: KenVector Future
+  fontName: 62DRAGZ
   fontNames:
-  - KenVector Future
-  fallbackFontReferences:
-  - {fileID: 12800000, guid: 87437e8848e63c54098f2a7fbace6573, type: 3}
+  - 62DRAGZ
+  fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
