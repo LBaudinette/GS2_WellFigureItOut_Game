@@ -14,8 +14,19 @@ public class PauseScript : MonoBehaviour
     //Canvas that the Button Select game object is a child of
     private GameObject parentCanvas;
 
+    //Sounds for menu buttons
+    private AudioClip hoverSound;
+    private AudioClip clickSound;
+
+    private AudioSource audioSource;
+
     private void Start() {
         parentCanvas = transform.root.gameObject;
+
+        hoverSound = (AudioClip)Resources.Load("Sounds/click1");
+        clickSound = (AudioClip)Resources.Load("Sounds/rollover1");
+
+        audioSource = GetComponent<AudioSource>();
     }
     public void buttonAction(GameObject buttonPressed) {
         switch (buttonPressed.name) {
@@ -26,18 +37,16 @@ public class PauseScript : MonoBehaviour
                 break;
             case "Retry Button":
                 GameManager.Instance.unPauseGame();
-                //Reload scene 
                 Initiate.Fade(SceneManager.GetActiveScene().name, Color.black, 1f);
+                GameManager.Instance.resetStats();
                 break;
             case "Level Select Button":
                 Instantiate(selectLevelPrefab);
                 GameObject.Find("Level Select Canvas(Clone)/Button Selector").GetComponent<LevelSelectScript>().PreviousCanvas
-                    = (GameObject)Resources.Load("Menu Canvas Prefabs/Pause Canvas");
+                    = (GameObject)Resources.Load("UI/Pause Canvas");
                 Destroy(parentCanvas);
                 break;
             case "Main Menu Button":
-                //Instantiate(mainMenuPrefab);
-                //Destroy(parentCanvas);
                 GameManager.Instance.unPauseGame();
                 Initiate.Fade("MainMenu", Color.black, 1f);
 
@@ -55,5 +64,12 @@ public class PauseScript : MonoBehaviour
 
         }
 
+    }
+    public void playHoverSound() {
+        audioSource.PlayOneShot(hoverSound);
+    }
+
+    public void playClickSound() {
+        audioSource.PlayOneShot(clickSound);
     }
 }

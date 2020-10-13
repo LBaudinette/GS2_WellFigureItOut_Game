@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded, isJumping, isCrouching, isSliding,
         isOnSlope, wasGrounded, wasOnSlope, isPaused;
     private float gravity = -9.81f; //default value of gravity in Unity
-    private int jumpCounter = 2;
+    public int jumpCounter = 2;
     private float walkSpeed = 7f;
     private float sprintSpeed = 10f;
     private float airAccel = 5f;
@@ -53,6 +53,10 @@ public class PlayerMovement : MonoBehaviour
         charController = GetComponent<CharacterController>();
         playerLook = GetComponent<PlayerLook>();
         respawn();
+        if(GameObject.FindWithTag("HUD") == null){
+            print("NEW HUD");
+            Instantiate(Resources.Load("UI/HUD"));
+        }
     }
 
     // Update is called once per frame
@@ -64,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
 
         //Pause Menu
         if (Input.GetButtonDown("Cancel") && !GameManager.Instance.isPaused) {
-            GameManager.Instance.pauseGame();
+            GameManager.Instance.pauseGame(true);
         }
         else if (Input.GetButtonDown("Cancel") && GameManager.Instance.isPaused) {
             GameManager.Instance.unPauseGame();
@@ -222,7 +226,6 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown("Jump"))
         {
             bool inMidairCanJump = jumpCounter > 0 && !isGrounded;
-
             if (inMidairCanJump || isGrounded)
             {
                 isJumping = true;

@@ -1,13 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public bool isPaused, isTiming, levelFinished, isHighScore;
+    public float timer = 0f;
+    public int enemiesDefeated = 0;
     private static GameManager instance = null;
     private GameObject pauseCanvas;
     private GameObject pauseCanvasClone;
-    public bool isPaused;
+
+
 
     public static GameManager Instance {
         get {
@@ -16,6 +21,7 @@ public class GameManager : MonoBehaviour
                 GameManagerObject.name = "GameManager";
 
                 instance = GameManagerObject.AddComponent<GameManager>();
+                
             }
             return instance;
         }
@@ -25,7 +31,9 @@ public class GameManager : MonoBehaviour
 
     void Awake() {
         DontDestroyOnLoad(gameObject);
-        pauseCanvas = (GameObject)Resources.Load("Menu Canvas Prefabs/Pause Canvas");
+        pauseCanvas = (GameObject)Resources.Load("UI/Pause Canvas");
+        isPaused = false;
+        levelFinished = false;
     }
     // Start is called before the first frame update
     void Start()
@@ -36,16 +44,18 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        updateTimer();
     }
-
-    public void pauseGame() {
-        pauseCanvasClone = Instantiate(pauseCanvas);
+    //isPausedMenu is true if we are pausing the game through the pause menu
+    public void pauseGame(bool isPausedMenu) {
+        
         isPaused = true;
+        isTiming = false;
         Time.timeScale = 0;
 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        pauseCanvasClone = Instantiate(pauseCanvas);
     }
     public void unPauseGame() {
         //Destroy any menu canvases that are open
@@ -53,10 +63,50 @@ public class GameManager : MonoBehaviour
         Destroy(GameObject.Find("Pause Canvas(Clone)"));
 
         isPaused = false;
+        if(!levelFinished)
+            isTiming = true;
         Time.timeScale = 1;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
-    
+
+    public void finishTime() {
+        isTiming = false;
+        levelFinished = true;
+        //pauseGame(false);
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        string currentScene = SceneManager.GetActiveScene().name;
+        float savedTime =
+             PlayerPrefs.GetFloat(currentScene, -1f);
+        if(savedTime != -1f) {
+            if (timer < savedTime) {
+                PlayerPrefs.SetFloat(currentScene, timer);
+                isHighScore = true;
+            }
+                
+        }
+        else {
+            PlayerPrefs.SetFloat(currentScene, timer);
+        }
+
+        //Instantiate the Level End Screen
+        Instantiate((GameObject)Resources.Load("UI/Level End Canvas"));
+    }
+
+    public void resetStats() {
+        timer = 0f;
+        enemiesDefeated = 0;
+        isHighScore = false;
+    }
+    public void reduceTimer(float amount) {
+        timer -= amount;
+    }
+    private void updateTimer() {
+        if (!isPaused && isTiming) 
+            timer += Time.deltaTime;
+    }
 
 }

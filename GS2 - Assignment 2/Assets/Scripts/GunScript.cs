@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class GunScript : MonoBehaviour {
     public float force, smooth;                 //the intensity of weapon look sway and smoothing for LERP
-    public float idleCounter, movementCounter;
     public Camera camera;
     public Transform gunEnd;                    //transform for the gun end found as a child of the gun object
-    public Texture2D crosshair;                 //texture for the crosshair that this script draws
     private Quaternion originalRotation;        //the original rotation for the gun
     private PlayerMovement playerMovement;      //reference to the player movement script to check for movement states 
     private Vector3 targetPosition;             //used for weapon sway to lerp to target position
-    private LineRenderer laser;      
-    
+    private LineRenderer laser;
+
+    private float idleCounter, movementCounter;
     private float nextShoot;                    //the time for when the player can shoot again
     private float rateOfFire = 0.5f;              //the delay between when the player can shoot multiple times
     private float weaponRange = 50.0f;          //range of the weapon if nothing is hit
@@ -30,7 +29,9 @@ public class GunScript : MonoBehaviour {
 
     private Vector3 rotationalRecoil;           //Recoil relating to the rotation of the weapon
     private Vector3 positionalRecoil;           //Recoil relation to the position of the weapon
-    
+
+    private AudioClip laserSound;
+    private AudioSource audioSource;
     
 
     void Start() {
@@ -39,11 +40,15 @@ public class GunScript : MonoBehaviour {
         laser = GetComponent<LineRenderer>();
         origStartWidth = laser.startWidth;
         origEndWidth = laser.endWidth;
+
+        laserSound = (AudioClip)Resources.Load("Sounds/Laser");
+        audioSource = GetComponent<AudioSource>();
         
     }
 
     void Update() {
-        
+        if (GameManager.Instance.isPaused || GameManager.Instance.levelFinished)
+            return;
         
         if (Input.GetButtonDown("Fire1") && Time.time > nextShoot) {
             /*add the rate of fire to the current time to find what time the
@@ -55,19 +60,10 @@ public class GunScript : MonoBehaviour {
     }
 
     private void FixedUpdate() {
-        //rotationalRecoil = Vector3.Lerp(rotationalRecoil, Vector3.zero, rotationRecoverSpeed * Time.deltaTime);
-        //positionalRecoil = Vector3.Lerp(positionalRecoil, Vector3.zero, positionRecoverSpeed * Time.deltaTime);
-
-        //transform.localPosition = Vector3.Slerp(transform.localPosition, positionalRecoil, positionRecoilSpeed * Time.fixedDeltaTime);
-        //targetRecoilRotation = Vector3.Slerp(targetRecoilRotation, rotationalRecoil, rotationRecoilSpeed * Time.fixedDeltaTime);
-        //transform.localRotation = Quaternion.Euler(targetRecoilRotation);
-
+        if (GameManager.Instance.isPaused || GameManager.Instance.levelFinished)
+            return;
         lookSway();
         movementSway();
-    }
-
-    private void LateUpdate() {
-        
     }
 
     void shoot() {
@@ -86,6 +82,8 @@ public class GunScript : MonoBehaviour {
             switch (hit.collider.tag) {
                 case "Enemy":
                     Destroy(hit.collider.gameObject);
+                    GameManager.Instance.enemiesDefeated++;
+                    GameManager.Instance.reduceTimer(1f);
                     break;
                 case "Switch":
                     hit.collider.gameObject.GetComponent<SwitchScript>().enable();
@@ -109,14 +107,12 @@ public class GunScript : MonoBehaviour {
 
         }
 
-        //recoil();
+        audioSource.PlayOneShot(laserSound);
     }
     void createLaser(Vector3 endPoint) {
         laser.enabled = true;
         laser.SetPosition(0, gunEnd.position);
         laser.SetPosition(1, endPoint);
-        //laser.startWidth = 0.1f;
-        //laser.endWidth = 0.5f;
         StartCoroutine(fadeLasers());
     }
 
@@ -137,11 +133,6 @@ public class GunScript : MonoBehaviour {
         laser.endWidth = origEndWidth;
     }
 
-    void recoil() {
-        rotationalRecoil += new Vector3(-rotationRecoil.x, rotationRecoil.y, rotationRecoil.z);
-        positionalRecoil += new Vector3( kickbackRecoil.x, kickbackRecoil.y, kickbackRecoil.z);
-    }
-
     //Gun sway when moving the camera
     void lookSway() {
         float mouseX = Input.GetAxis("Mouse X");
@@ -149,7 +140,7 @@ public class GunScript : MonoBehaviour {
 
         //Create a x and y rotation for the look sway depending on what way the player looked
         Quaternion tmpX = Quaternion.AngleAxis(-force * mouseX, Vector3.up);
-        Quaternion tmpY = Quaternion.AngleAxis(force * mouseY, Vector3.right);
+        Quaternion tmpY = Quaternion.AngleAxis(-force * mouseY, Vector3.right);
 
         //multiplying Quaternions adds the angles together
         Quaternion targetRotation = originalRotation * tmpX * tmpY;
@@ -188,10 +179,6 @@ public class GunScript : MonoBehaviour {
         }
     }
 
-    private void OnGUI() {
-        GUI.DrawTexture(new Rect((Screen.width / 2) - (crosshair.width / 2), 
-             (Screen.height / 2) - crosshair.height / 2, crosshair.width, crosshair.height), crosshair);
-    }
 
     //Sets target position to lerp to for weapon sway during movement
     private void weaponSway(float x, float xSwayIntensity, float ySwayIntensity) {

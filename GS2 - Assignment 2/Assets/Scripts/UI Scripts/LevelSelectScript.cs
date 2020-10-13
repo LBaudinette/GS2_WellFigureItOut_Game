@@ -1,17 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelSelectScript : MonoBehaviour
 {
-    //Canvas for the main menu screen
-    //public GameObject mainMenuPrefab;
-    private GameObject pauseMenuPrefab;
+    public Text levelText;
+    public Text totalEnemiesText;
+    public Text bestTimeText;
     
     private GameObject parentCanvas;
     private string levelSelected;
-
     private GameObject previousCanvas;
+
+    private AudioClip hoverSound;
+    private AudioClip clickSound;
+
+    private AudioSource audioSource;
+
     public GameObject PreviousCanvas {
         get { return previousCanvas; }
         set { previousCanvas = value; }
@@ -19,8 +25,11 @@ public class LevelSelectScript : MonoBehaviour
 
     private void Start() {
         parentCanvas = transform.root.gameObject;
-        print("GAME OBJECT: " + gameObject.name);
-        print(transform.root.name);
+
+        hoverSound = (AudioClip)Resources.Load("Sounds/click1");
+        clickSound = (AudioClip)Resources.Load("Sounds/rollover1");
+
+        audioSource = GetComponent<AudioSource>();
     }
     private void Update() {
        
@@ -54,5 +63,25 @@ public class LevelSelectScript : MonoBehaviour
                 break;
 
         }
+        displayStats();
+    }
+     
+    private void displayStats() {
+        float bestTime = PlayerPrefs.GetFloat(levelSelected, -1f);
+
+        levelText.text = levelSelected;
+        if (bestTime != -1f)
+            bestTimeText.text = "Best Time: " + bestTime.ToString("f1");
+        else
+            bestTimeText.text = "Not Yet Completed";
+
+
+    }
+    public void playHoverSound() {
+        audioSource.PlayOneShot(hoverSound);
+    }
+
+    public void playClickSound() {
+        audioSource.PlayOneShot(clickSound);
     }
 }

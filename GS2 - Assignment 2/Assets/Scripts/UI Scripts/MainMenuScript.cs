@@ -7,11 +7,20 @@ public class MainMenuScript : MonoBehaviour
 {
     //Canvas for select level screen
     public GameObject selectLevelPrefab;
-    //Canvas that the Button Select game object is a child of
+    private AudioClip hoverSound;
+    private AudioClip clickSound;
+
     private GameObject parentCanvas;
+
+    private AudioSource audioSource;
 
     private void Start() {
         parentCanvas = transform.root.gameObject;
+
+        hoverSound = (AudioClip)Resources.Load("Sounds/click1");
+        clickSound = (AudioClip)Resources.Load("Sounds/rollover1");
+
+        audioSource = GetComponent<AudioSource>();
 
         //unlock cursor in case we loaded from game scene
         Cursor.visible = true;
@@ -25,9 +34,9 @@ public class MainMenuScript : MonoBehaviour
                 break;
             case "Level Select Button":
                 Instantiate(selectLevelPrefab);
-                //set the canvas that the 'back' button will load back to
-                GameObject.Find("Level Select Canvas(Clone)/Button Selector").GetComponent<LevelSelectScript>().PreviousCanvas
-                    = (GameObject)Resources.Load("Menu Canvas Prefabs/Main Menu Canvas"); 
+                //set the canvas what the 'back' button will load back to
+                GameObject.Find("Level Select Canvas(Clone)/Level Select Script").GetComponent<LevelSelectScript>().PreviousCanvas
+                    = (GameObject)Resources.Load("UI/Main Menu Canvas"); 
                 Destroy(parentCanvas);
                 break;
             case "Quit Game Button":
@@ -38,9 +47,14 @@ public class MainMenuScript : MonoBehaviour
                     Application.Quit();
                 #endif
                 break;
-
-
-
         }
+    }
+
+    public void playHoverSound() {
+        audioSource.PlayOneShot(hoverSound);
+    }
+
+    public void playClickSound() {
+        audioSource.PlayOneShot(clickSound);
     }
 }

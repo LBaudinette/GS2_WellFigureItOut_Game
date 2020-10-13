@@ -15,6 +15,8 @@ public class EnemyScript : MonoBehaviour
     void Start()
     {
         charController = GetComponent<CharacterController>();
+        player = GameObject.FindGameObjectWithTag("Player");
+
     }
 
     // Update is called once per frame
