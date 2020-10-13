@@ -10,11 +10,23 @@ public class LevelEndUIScript : MonoBehaviour
     public Text highScoreText;
     public Text currentScoreText;
     public Animator animator;
-    // Start is called before the first frame update
+    public GameObject newHighScore;
+
+    private AudioClip hoverSound;
+    private AudioClip clickSound;
+
+    private AudioSource audioSource;
+
     void Start()
     {
         animator.SetBool("isMoving", true);
         setText();
+
+        hoverSound = (AudioClip)Resources.Load("Sounds/click1");
+        clickSound = (AudioClip)Resources.Load("Sounds/rollover1");
+
+        audioSource = GetComponent<AudioSource>();
+
     }
 
     public void buttonAction(GameObject buttonPressed) {
@@ -44,7 +56,6 @@ public class LevelEndUIScript : MonoBehaviour
         //Set currentScore Text
         string currentScoreMinutes = ((int)GameManager.Instance.timer / 60).ToString();
         string currentScoreSeconds = (GameManager.Instance.timer % 60).ToString("f1");
-        print("HIGH SCOE" + currentScoreSeconds);
         currentScoreText.text = "Your Time: \n" + currentScoreMinutes + ":" + currentScoreSeconds;
 
         //Set high score text
@@ -59,6 +70,16 @@ public class LevelEndUIScript : MonoBehaviour
         else {
             highScoreText.text = "Best Time: \n" + currentScoreText.text;
         }
+        //if the player has a new high score, enable the "New High Score" text
+        if (GameManager.Instance.isHighScore)
+            newHighScore.SetActive(true);
     }
 
+    public void playHoverSound() {
+        audioSource.PlayOneShot(hoverSound);
+    }
+
+    public void playClickSound() {
+        audioSource.PlayOneShot(clickSound);
+    }
 }

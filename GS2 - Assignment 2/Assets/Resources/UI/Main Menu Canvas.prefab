@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d32143f4c4657ce4f8d4132b069dc6a7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c9ddcb4d4da337c40b7ccc6dfa44237f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -241,7 +241,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 470232349e055f749a89d48f8e69d2a4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c9ddcb4d4da337c40b7ccc6dfa44237f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -372,7 +372,7 @@ RectTransform:
   - {fileID: 1866430787736640574}
   - {fileID: 1866430787858098489}
   m_Father: {fileID: 1866430787819470773}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -472,8 +472,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 8997129730620906997}
-  - {fileID: 1866430787815743963}
   - {fileID: 8501029142976152817}
+  - {fileID: 1866430787815743963}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1023,7 +1023,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1ed3332d289f17b41b71eae733a2a636, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c9ddcb4d4da337c40b7ccc6dfa44237f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1261,8 +1261,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectLevelPrefab: {fileID: 4489614799458449111, guid: dbb22b76e8defe84ca03bf3311650519,
     type: 3}
-  hoverSound: {fileID: 8300000, guid: d456eee573da4024faec31ee2e0630a0, type: 3}
-  clickSound: {fileID: 8300000, guid: ad21be3f531c73e49af69c820bffd066, type: 3}
 --- !u!82 &1057254295
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1389,7 +1387,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1866430787819470773}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

@@ -39,6 +39,7 @@ public class HUDScript : MonoBehaviour
 
     }
 
+
     private void setJumpCounters() {
         int numJumps =
             GameObject.FindWithTag("Player").GetComponent<PlayerMovement>().jumpCounter;

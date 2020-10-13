@@ -13,6 +13,11 @@ public class LevelSelectScript : MonoBehaviour
     private string levelSelected;
     private GameObject previousCanvas;
 
+    private AudioClip hoverSound;
+    private AudioClip clickSound;
+
+    private AudioSource audioSource;
+
     public GameObject PreviousCanvas {
         get { return previousCanvas; }
         set { previousCanvas = value; }
@@ -20,8 +25,11 @@ public class LevelSelectScript : MonoBehaviour
 
     private void Start() {
         parentCanvas = transform.root.gameObject;
-        print("GAME OBJECT: " + gameObject.name);
-        print(transform.root.name);
+
+        hoverSound = (AudioClip)Resources.Load("Sounds/click1");
+        clickSound = (AudioClip)Resources.Load("Sounds/rollover1");
+
+        audioSource = GetComponent<AudioSource>();
     }
     private void Update() {
        
@@ -68,5 +76,12 @@ public class LevelSelectScript : MonoBehaviour
             bestTimeText.text = "Not Yet Completed";
 
 
+    }
+    public void playHoverSound() {
+        audioSource.PlayOneShot(hoverSound);
+    }
+
+    public void playClickSound() {
+        audioSource.PlayOneShot(clickSound);
     }
 }

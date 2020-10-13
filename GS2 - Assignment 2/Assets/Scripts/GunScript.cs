@@ -29,7 +29,9 @@ public class GunScript : MonoBehaviour {
 
     private Vector3 rotationalRecoil;           //Recoil relating to the rotation of the weapon
     private Vector3 positionalRecoil;           //Recoil relation to the position of the weapon
-    
+
+    private AudioClip laserSound;
+    private AudioSource audioSource;
     
 
     void Start() {
@@ -38,6 +40,9 @@ public class GunScript : MonoBehaviour {
         laser = GetComponent<LineRenderer>();
         origStartWidth = laser.startWidth;
         origEndWidth = laser.endWidth;
+
+        laserSound = (AudioClip)Resources.Load("Sounds/Laser");
+        audioSource = GetComponent<AudioSource>();
         
     }
 
@@ -57,19 +62,8 @@ public class GunScript : MonoBehaviour {
     private void FixedUpdate() {
         if (GameManager.Instance.isPaused || GameManager.Instance.levelFinished)
             return;
-        //rotationalRecoil = Vector3.Lerp(rotationalRecoil, Vector3.zero, rotationRecoverSpeed * Time.deltaTime);
-        //positionalRecoil = Vector3.Lerp(positionalRecoil, Vector3.zero, positionRecoverSpeed * Time.deltaTime);
-
-        //transform.localPosition = Vector3.Slerp(transform.localPosition, positionalRecoil, positionRecoilSpeed * Time.fixedDeltaTime);
-        //targetRecoilRotation = Vector3.Slerp(targetRecoilRotation, rotationalRecoil, rotationRecoilSpeed * Time.fixedDeltaTime);
-        //transform.localRotation = Quaternion.Euler(targetRecoilRotation);
-
         lookSway();
         movementSway();
-    }
-
-    private void LateUpdate() {
-        
     }
 
     void shoot() {
@@ -110,14 +104,12 @@ public class GunScript : MonoBehaviour {
 
         }
 
-        //recoil();
+        audioSource.PlayOneShot(laserSound);
     }
     void createLaser(Vector3 endPoint) {
         laser.enabled = true;
         laser.SetPosition(0, gunEnd.position);
         laser.SetPosition(1, endPoint);
-        //laser.startWidth = 0.1f;
-        //laser.endWidth = 0.5f;
         StartCoroutine(fadeLasers());
     }
 
@@ -136,11 +128,6 @@ public class GunScript : MonoBehaviour {
         laser.enabled = false;
         laser.startWidth = origStartWidth;
         laser.endWidth = origEndWidth;
-    }
-
-    void recoil() {
-        rotationalRecoil += new Vector3(-rotationRecoil.x, rotationRecoil.y, rotationRecoil.z);
-        positionalRecoil += new Vector3( kickbackRecoil.x, kickbackRecoil.y, kickbackRecoil.z);
     }
 
     //Gun sway when moving the camera

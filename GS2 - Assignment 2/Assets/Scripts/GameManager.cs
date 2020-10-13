@@ -5,13 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public bool isPaused, isTiming, levelFinished;
+    public bool isPaused, isTiming, levelFinished, isHighScore;
     public float timer = 0f;
     public int enemiesDefeated = 0;
     private static GameManager instance = null;
     private GameObject pauseCanvas;
     private GameObject pauseCanvasClone;
-    
+
+
 
     public static GameManager Instance {
         get {
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviour
                 GameManagerObject.name = "GameManager";
 
                 instance = GameManagerObject.AddComponent<GameManager>();
+                
             }
             return instance;
         }
@@ -80,8 +82,11 @@ public class GameManager : MonoBehaviour
         float savedTime =
              PlayerPrefs.GetFloat(currentScene, -1f);
         if(savedTime != -1f) {
-            if (timer < savedTime)
+            if (timer < savedTime) {
                 PlayerPrefs.SetFloat(currentScene, timer);
+                isHighScore = true;
+            }
+                
         }
         else {
             PlayerPrefs.SetFloat(currentScene, timer);
@@ -94,6 +99,7 @@ public class GameManager : MonoBehaviour
     public void resetStats() {
         timer = 0f;
         enemiesDefeated = 0;
+        isHighScore = false;
     }
     public void reduceTimer(float amount) {
         timer -= amount;
@@ -103,5 +109,4 @@ public class GameManager : MonoBehaviour
             timer += Time.deltaTime;
     }
 
-    
 }
