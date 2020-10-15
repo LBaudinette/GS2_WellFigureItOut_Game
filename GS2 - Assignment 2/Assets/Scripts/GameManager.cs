@@ -5,12 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public bool isPaused, isTiming, levelFinished, isHighScore;
+    public bool isPaused, isTiming, levelFinished, isHighScore, isFrozen;
     public float timer = 0f;
     public int enemiesDefeated = 0;
     private static GameManager instance = null;
     private GameObject pauseCanvas;
     private GameObject pauseCanvasClone;
+    private float freezeTimer = 0f;
+    public int timerReduction = 2;
 
 
 
@@ -45,6 +47,13 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         updateTimer();
+        if (freezeTimer >= 0f) {
+            isFrozen = true;
+            freezeTimer -= Time.deltaTime;
+            print(freezeTimer);
+        }
+        else
+            isFrozen = false;
     }
     //isPausedMenu is true if we are pausing the game through the pause menu
     public void pauseGame(bool isPausedMenu) {
@@ -101,12 +110,43 @@ public class GameManager : MonoBehaviour
         enemiesDefeated = 0;
         isHighScore = false;
     }
-    public void reduceTimer(float amount) {
-        timer -= amount;
+    //Method used to reduce the timer when defeating enemies
+    public void reduceTimer() {
+        timer -= timerReduction;
+
+        //show the reduction in time
+        //Instantiate(Resources.Load("UI/Timer Reduction Canvas"));
+
     }
     private void updateTimer() {
-        if (!isPaused && isTiming) 
+        if (!isPaused && isTiming && !isFrozen) 
             timer += Time.deltaTime;
     }
 
+    public void freezeTime() {
+        startFreeze();
+    }
+
+    private void startFreeze() {
+        //isFrozen = true;
+        freezeTimer += timerReduction;
+        if (freezeTimer >= 0f) {
+            //StartCoroutine(stopTimer());
+
+        }
+
+
+    }
+
+    private IEnumerator stopTimer() {
+
+        if(freezeTimer >= 0f) {
+            freezeTimer -= Time.deltaTime;
+            print(freezeTimer);
+            yield return null;
+        }
+        print("Done");
+        isFrozen = false;
+
+    }
 }

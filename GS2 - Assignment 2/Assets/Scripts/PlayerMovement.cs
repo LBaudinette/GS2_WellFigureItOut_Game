@@ -366,7 +366,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 currentRotation = camera.transform.eulerAngles;
         Vector3 targetRotation = new Vector3(camera.transform.eulerAngles.x, camera.transform.eulerAngles.y, angle);
         Vector3 currentRotate;
-        //print("CURRENT: " + currentRotation + " TARGET: " + targetRotation);
         float duration = 0.3f;
         float time = 0.0f;
 
@@ -375,7 +374,6 @@ public class PlayerMovement : MonoBehaviour
 
             currentRotate = Vector3.Lerp(currentRotation, targetRotation, time / duration);
             camera.transform.eulerAngles = currentRotate;
-            //camera.transform.rotation = Quaternion.Euler(currentRotate);
 
             time += Time.deltaTime;
 

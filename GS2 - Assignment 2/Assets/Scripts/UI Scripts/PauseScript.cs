@@ -42,7 +42,7 @@ public class PauseScript : MonoBehaviour
                 break;
             case "Level Select Button":
                 Instantiate(selectLevelPrefab);
-                GameObject.Find("Level Select Canvas(Clone)/Button Selector").GetComponent<LevelSelectScript>().PreviousCanvas
+                GameObject.Find("Level Select Canvas(Clone)/Level Select Script").GetComponent<LevelSelectScript>().PreviousCanvas
                     = (GameObject)Resources.Load("UI/Pause Canvas");
                 Destroy(parentCanvas);
                 break;

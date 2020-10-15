@@ -35,7 +35,13 @@ public class HUDScript : MonoBehaviour
         string minutes = ((int)timer / 60).ToString();
         string seconds = (timer % 60).ToString("f1");
 
-        timerText.text = minutes + ":" + seconds;        
+        timerText.text = minutes + ":" + seconds;
+
+        if (GameManager.Instance.isFrozen)
+            timerText.color = Color.red;
+        else
+            timerText.color = Color.white;
+
 
     }
 

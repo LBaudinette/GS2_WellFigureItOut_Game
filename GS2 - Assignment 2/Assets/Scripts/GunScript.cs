@@ -83,7 +83,7 @@ public class GunScript : MonoBehaviour {
                 case "Enemy":
                     Destroy(hit.collider.gameObject);
                     GameManager.Instance.enemiesDefeated++;
-                    GameManager.Instance.reduceTimer(1f);
+                    GameManager.Instance.freezeTime();
                     break;
                 case "Switch":
                     hit.collider.gameObject.GetComponent<SwitchScript>().enable();
