@@ -183,7 +183,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     float speedX = (1f - currSlope.normal.y) * currSlope.normal.x * (1f - slideFriction);
                     float speedZ = (1f - currSlope.normal.y) * currSlope.normal.z * (1f - slideFriction);
-                    speed += (speedZ + speedX) * 250f * Time.deltaTime;
+                    speed += Math.Abs((speedZ + speedX) * 250f * Time.deltaTime);
                     charController.Move(currSlope.point - charController.transform.position);
                 }
             }
@@ -420,9 +420,11 @@ public class PlayerMovement : MonoBehaviour
             if (hit.normal != Vector3.up)
             {
                 currSlope = hit;
+                UnityEngine.Debug.Log("is on slope");
                 return true;
             }
         }
+        UnityEngine.Debug.Log("not on slope");
         return false;
     }
 

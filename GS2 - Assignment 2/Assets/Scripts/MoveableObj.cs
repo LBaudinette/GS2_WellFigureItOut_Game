@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MoveableObj : MonoBehaviour
 {
-    public Transform point1;
+    public Transform point0, point1;
     public float moveTime;
     private Vector3 lastMove;
     private bool activated;
@@ -47,7 +47,7 @@ public class MoveableObj : MonoBehaviour
     private IEnumerator moveObj()
     {
         float elapsedTime = 0;
-        Vector3 startPos = this.transform.position;
+        Vector3 startPos = point0.position;
         Vector3 lastPos = startPos;
         Vector3 nextPos = startPos;
         while (elapsedTime < moveTime)
