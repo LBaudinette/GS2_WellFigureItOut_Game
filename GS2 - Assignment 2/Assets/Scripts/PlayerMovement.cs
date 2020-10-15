@@ -157,7 +157,7 @@ public class PlayerMovement : MonoBehaviour
                     enterSlide();
                 }
 
-            } else 
+            } else if (!isSliding) 
             {
                 // crouching inputs
                 if (Input.GetButtonDown("Crouch"))
@@ -175,7 +175,6 @@ public class PlayerMovement : MonoBehaviour
                 // slide exit on jump
                 if (this.speed <= crouchSpeed || Input.GetButtonDown("Jump") || Input.GetButtonUp("Crouch"))
                 {
-                    UnityEngine.Debug.Log("Conditions met to exit slide");
                     exitSlide();
                 }
 
@@ -420,11 +419,9 @@ public class PlayerMovement : MonoBehaviour
             if (hit.normal != Vector3.up)
             {
                 currSlope = hit;
-                UnityEngine.Debug.Log("is on slope");
                 return true;
             }
         }
-        UnityEngine.Debug.Log("not on slope");
         return false;
     }
 
@@ -509,6 +506,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void exitSlide()
     {
+        // UnityEngine.Debug.Log("exiting slide");
         this.isSliding = false;
         if (slideRoutine != null)
         {
@@ -517,21 +515,24 @@ public class PlayerMovement : MonoBehaviour
 
         if (isGrounded)
         {
+            // UnityEngine.Debug.Log("grounded on slide exit");
             if (Input.GetButtonDown("Jump"))
             {
-
+                // UnityEngine.Debug.Log("jumped out of slide");
             }
-            else if (Input.GetButton("Crouch"))
+            else if (Input.GetButtonDown("Crouch"))
             {
+                // UnityEngine.Debug.Log("crouching on slide exit");
                 playerLook.sprint(isSprinting);
                 enterCrouch();
                 this.speed = crouchSpeed;
             }
             else
             {
+                // UnityEngine.Debug.Log("exiting slide normally");
                 playerLook.sprint(isSprinting);
                 charController.height = standingHeight;
-                if (speed < sprintSpeed)
+                if (this.speed <= sprintSpeed)
                 {
                     this.speed = sprintSpeed;
                 }
