@@ -6,6 +6,7 @@ public class EnemyScript : MonoBehaviour
 {
     public GameObject player;
     public float speed, aggroDistance;
+    public LayerMask enemyZoneMask;
     private CharacterController charController;
     private float angle;
     private Quaternion currentRotation;
@@ -29,24 +30,6 @@ public class EnemyScript : MonoBehaviour
             moveToPlayer();
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "enemyZone")
-        {
-            UnityEngine.Debug.Log("entered enemy zone");
-            inEnemyZone = true;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.tag == "enemyZone")
-        {
-            UnityEngine.Debug.Log("left enemy zone");
-            inEnemyZone = false;
-        }
-    }
-
     void moveToPlayer() {
         Vector3 playerDir;
         if(gameObject.name == "Air Enemy"){
@@ -56,10 +39,17 @@ public class EnemyScript : MonoBehaviour
             playerDir = new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z);
         }
         transform.LookAt(player.transform, Vector3.up);
-        if (inEnemyZone)
+        float step = speed * Time.deltaTime;
+        Vector3 nextPos = Vector3.MoveTowards(transform.position, playerDir, step);
+        if (gameObject.name == "Air Enemy"){
+            if (Physics.CheckSphere(nextPos, 0.1f, enemyZoneMask))
+            {
+
+                transform.position = nextPos;
+            }
+        } else
         {
-            float step = speed * Time.deltaTime;
-            transform.position = Vector3.MoveTowards(transform.position, playerDir, step);
+            transform.position = nextPos;
         }
         
 
