@@ -40,7 +40,7 @@ public class LevelEndUIScript : MonoBehaviour
                 //print("NEXT SCENE INDEXX: " + nextSceneIndex);
 
                 //string nextSceneName = SceneManager.GetSceneByBuildIndex(nextSceneIndex);
-                string nextLevelName = "Level " + (SceneManager.GetActiveScene().buildIndex + 1);
+                string nextLevelName = "Level " + (SceneManager.GetActiveScene().buildIndex);
                 Initiate.Fade(nextLevelName, Color.black, 1f);
                 break;
             case "Main Menu Button":
