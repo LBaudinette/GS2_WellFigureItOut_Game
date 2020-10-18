@@ -20,6 +20,8 @@ public class MainMenuScript : MonoBehaviour
         hoverSound = (AudioClip)Resources.Load("Sounds/click1");
         clickSound = (AudioClip)Resources.Load("Sounds/rollover1");
 
+        UnityEngine.Debug.Log(GameManager.Instance.enemiesDefeated);
+
         audioSource = GetComponent<AudioSource>();
 
         //unlock cursor in case we loaded from game scene

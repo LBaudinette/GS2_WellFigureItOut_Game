@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     private static GameManager instance = null;
     private GameObject pauseCanvas;
     private GameObject pauseCanvasClone;
+    private AudioSource musicSource;
+    private AudioClip music;
     private float freezeTimer = 0f;
     public int timerReduction = 2;
 
@@ -33,6 +35,13 @@ public class GameManager : MonoBehaviour
 
     void Awake() {
         DontDestroyOnLoad(gameObject);
+        music = (AudioClip)Resources.Load("wave_test_2");
+        gameObject.AddComponent<AudioSource>();
+        musicSource = GetComponent<AudioSource>();
+        musicSource.volume = 0.6f;
+        musicSource.loop = true;
+        musicSource.clip = music;
+        musicSource.Play();
         pauseCanvas = (GameObject)Resources.Load("UI/Pause Canvas");
         isPaused = false;
         levelFinished = false;
@@ -40,7 +49,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
