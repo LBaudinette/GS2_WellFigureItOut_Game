@@ -636,8 +636,8 @@ public class PlayerMovement : MonoBehaviour
         while ((appliedForce > 5f && !isGrounded && !isOnSlope && !isWallRunning && !wasGrounded) || (appliedForce > 5f && (isGrounded || isOnSlope || isWallRunning) && wasGrounded))
         {
             UnityEngine.Debug.Log("force = " + appliedForce);
-            charController.Move(direction * appliedForce * Time.deltaTime);
-            appliedForce -= appliedForce * Time.deltaTime;
+            charController.Move(direction * appliedForce * Time.fixedDeltaTime);
+            appliedForce -= appliedForce * Time.fixedDeltaTime;
             yield return null;
         }
     }

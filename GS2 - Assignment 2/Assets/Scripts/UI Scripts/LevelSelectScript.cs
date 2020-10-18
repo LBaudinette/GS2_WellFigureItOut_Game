@@ -44,6 +44,7 @@ public class LevelSelectScript : MonoBehaviour
             case "Continue Button":
                 if(GameManager.Instance.isPaused)
                     GameManager.Instance.unPauseGame();
+                GameManager.Instance.resetStats();
                 Initiate.Fade(levelSelected, Color.black, 1.0f);
                 break;
             case "Tutorial Button":
