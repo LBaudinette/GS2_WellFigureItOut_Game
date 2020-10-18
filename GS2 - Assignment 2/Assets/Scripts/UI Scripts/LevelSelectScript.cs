@@ -46,6 +46,9 @@ public class LevelSelectScript : MonoBehaviour
                     GameManager.Instance.unPauseGame();
                 Initiate.Fade(levelSelected, Color.black, 1.0f);
                 break;
+            case "Tutorial Button":
+                levelSelected = "Tutorial";
+                break;
             case "Level 1 Button":
                 levelSelected = "Level 1";
                 break;
